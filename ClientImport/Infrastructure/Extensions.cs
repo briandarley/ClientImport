@@ -3,15 +3,28 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using OfficeOpenXml.FormulaParsing.Utilities;
 
 namespace ClientImport.Infrastructure
 {
     public static class Extensions
     {
+        public static bool IsDate(this object value)
+        {
+            if (value == DBNull.Value) return false;
+            var stringValue = value.ToString();
+            DateTime result;
+
+            var converted = DateTime.TryParse(stringValue, out result);
+
+            if (!converted) return false;
+            return result != DateTime.MinValue;
+        }
         public static string GetString(this IDataReader dr, string column)
         {
             var index = dr.GetOrdinal(column);
@@ -20,72 +33,94 @@ namespace ClientImport.Infrastructure
 
         public static object GetValue(this IDataReader dr, PropertyInfo propertyInfo)
         {
-            var result = dr.GetValue(
-                dr.GetOrdinal(((ColumnAttribute)propertyInfo.GetCustomAttribute(typeof(ColumnAttribute))).Name)
-                );
-
-            if (propertyInfo.PropertyType == typeof(decimal))
+            try
             {
+                var result = dr.GetValue(
+                    dr.GetOrdinal(((ColumnAttribute)propertyInfo.GetCustomAttribute(typeof(ColumnAttribute))).Name)
+                    );
 
-                if (result is double)
+                if (propertyInfo.PropertyType == typeof(decimal) && result != DBNull.Value)
                 {
-                    return (decimal)(double)result;
+
+                    if (result is double)
+                    {
+                        return (decimal)(double)result;
+
+                    }
+                    result = (decimal)result;
 
                 }
-                result = (decimal)result;
-
-            }
-            if (propertyInfo.PropertyType == typeof(int))
-            {
-                if (result is string)
+                if (propertyInfo.PropertyType == typeof(int))
                 {
-                    if (result.ToString().Trim().Length == 0)
+                    if (result is string && result != DBNull.Value)
                     {
-                        return string.Empty;
+                        if (result.ToString().Trim().Length == 0)
+                        {
+                            return string.Empty;
+                        }
+                        result = Convert.ToInt32(result);
+                    }
+                    else if (result != DBNull.Value)
+                    {
+                        result = Convert.ToInt32(result);
                     }
 
                 }
-                else
+                if (propertyInfo.PropertyType == typeof(string) && result.GetType() != propertyInfo.PropertyType)
                 {
-                    result = Convert.ToInt32(result);
+                    result = Convert.ToString(result);
                 }
-
-            }
-            if (propertyInfo.PropertyType == typeof(string) && result.GetType() != propertyInfo.PropertyType)
-            {
-                result = Convert.ToString(result);
-            }
-            if (propertyInfo.PropertyType.IsGenericType &&
-                propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-            {
-                if (propertyInfo.PropertyType == typeof(decimal?))
+                if (propertyInfo.PropertyType.IsGenericType &&
+                    propertyInfo.PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
                 {
-                    result = ChangeType<decimal>(result);
+                    if (propertyInfo.PropertyType == typeof(decimal?) && result != DBNull.Value)
+                    {
+
+                        result = ChangeType<decimal>(result);
+
+
+                    }
+
                 }
-
+                if (propertyInfo.PropertyType == typeof(DateTime) && result.GetType() != propertyInfo.PropertyType)
+                {
+                    if (result.IsDate())
+                    {
+                        result = Convert.ToDateTime(result);
+                    }
+                    else
+                    {
+                        result = null;
+                    }
+                }
+                //else if (propertyInfo.PropertyType == typeof(int))
+                //{
+                //
+                //}
+                //else if (propertyInfo.PropertyType == typeof(int))
+                //{
+                //
+                //}
+                //else if (propertyInfo.PropertyType == typeof(int))
+                //{
+                //
+                //}
+                //else if (propertyInfo.PropertyType == typeof(int))
+                //{
+                //
+                //}
+                //else if (propertyInfo.PropertyType == typeof(int))
+                //{
+                //
+                //}
+                return result;
             }
-            //else if (propertyInfo.PropertyType == typeof(int))
-            //{
-            //
-            //}
-            //else if (propertyInfo.PropertyType == typeof(int))
-            //{
-            //
-            //}
-            //else if (propertyInfo.PropertyType == typeof(int))
-            //{
-            //
-            //}
-            //else if (propertyInfo.PropertyType == typeof(int))
-            //{
-            //
-            //}
-            //else if (propertyInfo.PropertyType == typeof(int))
-            //{
-            //
-            //}
-            return result;
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
 
 

@@ -15,8 +15,9 @@ namespace ClientImport
             //Process_Boca();
             //Process_BaptistHealth();
             //Process_CityOfMelbourne();
-            Process_LeeCountSchoolBoard();
-
+            //Process_LeeCountSchoolBoard();
+            //Process_MiamiJewish();
+            Process_MonroeCountySchoolBoard();
         }
 
         static void Process_Boca()
@@ -43,8 +44,16 @@ namespace ClientImport
             repo.ConvertSourceContents();
         }
 
-
-
+        static void Process_MiamiJewish()
+        {
+            var repo = new Models.ClientModels.Client.MiamiJewish.Repository();
+            repo.ConvertSourceContents();
+        }
+        static void Process_MonroeCountySchoolBoard()
+        {
+            var repo = new Models.ClientModels.Client.MonroeCountySchoolBoard.Repository();
+            repo.ConvertSourceContents();
+        }
 
     }
 }

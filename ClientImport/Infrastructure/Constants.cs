@@ -27,6 +27,11 @@ namespace ClientImport.Infrastructure
         public static string ConfigLeeCountySbFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:leeCounty"];
         public static string ConfigLeeCountySbFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:leeCounty"];
 
+        public static string ConfigMiamiJewishFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:miamiJewish"];
+        public static string ConfigMiamiJewishFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:miamiJewish"];
+
+        public static string ConfigMonroeCountySchoolBoardFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:monroeCountySchoolBoard"];
+        public static string ConfigMonroeCountySchoolBoardFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:monroeCountySchoolBoard"];
         public class Clients
         {
             
@@ -49,7 +54,16 @@ namespace ClientImport.Infrastructure
             public static string LeeCountySchoolBoardFullName => System.Configuration.ConfigurationManager.AppSettings["file-company-name:leeCountySB"];
             public static string LeeCountySchoolBoardCompanyNumber => System.Configuration.ConfigurationManager.AppSettings["file-company-number:leeCountySB"];
 
+            public static string MiamiJewish = "MiamiJewish";
+            public static string MiamiJewishFullName => System.Configuration.ConfigurationManager.AppSettings["file-company-name:miamiJewish"];
+            public static string MiamiJewishCompanyNumber => System.Configuration.ConfigurationManager.AppSettings["file-company-number:miamiJewish"];
+
+            public static string MonroeCountySchoolBoard = "Monroe County School Board";
+            public static string MonroeCountySchoolBoardFullName => System.Configuration.ConfigurationManager.AppSettings["file-company-name:monroeCountySchoolBoard"];
+            public static string MonroeCountySchoolBoardCompanyNumber => System.Configuration.ConfigurationManager.AppSettings["file-company-number:monroeCountySchoolBoard"];
         }
 
+
+        
     }
 }

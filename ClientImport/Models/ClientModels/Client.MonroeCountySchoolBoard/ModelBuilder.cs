@@ -3,7 +3,7 @@ using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
 
-namespace ClientImport.Models.ClientModels.Client.Boca
+namespace ClientImport.Models.ClientModels.Client.MonroeCountySchoolBoard
 {
     public class ModelBuilder
     {
@@ -17,11 +17,10 @@ namespace ClientImport.Models.ClientModels.Client.Boca
         {
             Mapper.Initialize(cfg =>
             {
-                
+
 
                 cfg.CreateMap<Record, JWSModels.Record>()
-                      .ForMember(target => target.DaysWorkedPerWeek, opts => opts.Ignore())
-                    .ForMember(target => target.DivisionNumber, opts => opts.Ignore())
+                    .ForMember(target => target.DaysWorkedPerWeek, opts => opts.Ignore())
                     .ForMember(target => target.GroupName, opts => opts.Ignore())
                     .ForMember(target => target.GroupNumber, opts => opts.Ignore())
                     .ForMember(target => target.Level6Name, opts => opts.Ignore())
@@ -30,14 +29,18 @@ namespace ClientImport.Models.ClientModels.Client.Boca
                     .ForMember(target => target.Level7Number, opts => opts.Ignore())
                     .ForMember(target => target.OccupationCode, opts => opts.Ignore())
                     .ForMember(target => target.UnionCode, opts => opts.Ignore())
+                    .ForMember(target => target.DepartmentName, opts => opts.Ignore())
+                    .ForMember(target => target.DepartmentNumber, opts => opts.Ignore())
+                    .ForMember(target => target.Level5Name, opts => opts.Ignore())
+                    .ForMember(target => target.Level5Number, opts => opts.Ignore())
+                    .ForMember(target => target.DivisionNumber, opts => opts.ResolveUsing(c => c.DivisionNumber))
                     .ForMember(target => target.AddressLine1, opts => opts.ResolveUsing(c => c.Address1))
                     .ForMember(target => target.AddressLine2, opts => opts.ResolveUsing(c => c.Address2))
                     .ForMember(target => target.City, opts => opts.ResolveUsing(c => c.City))
                     .ForMember(target => target.CompanyName, opts => opts.UseValue(Constants.Clients.BocaFullName))
                     .ForMember(target => target.CompanyNumber, opts => opts.UseValue(Constants.Clients.BocaCompanyNumber))
                     .ForMember(target => target.DateOfBirth, opts => opts.ResolveUsing(c => c.DateOfBirth))
-                    .ForMember(target => target.DepartmentName, opts => opts.ResolveUsing(c => c.DepartmentName))
-                    .ForMember(target => target.DepartmentNumber, opts => opts.ResolveUsing(c => c.DepartmentNumber))
+
                     .ForMember(target => target.DivisionName, opts => opts.ResolveUsing(c => c.DivisionName))
                     .ForMember(target => target.EmployeeId, opts => opts.ResolveUsing(c => c.EmployeeId))
                     .ForMember(target => target.FirstName, opts => opts.ResolveUsing(c => c.FirstName))
@@ -46,8 +49,6 @@ namespace ClientImport.Models.ClientModels.Client.Boca
                     .ForMember(target => target.JobClassCode, opts => opts.ResolveUsing(c => c.JobClassCode))
                     .ForMember(target => target.JobDescription, opts => opts.ResolveUsing(c => c.JobDescription))
                     .ForMember(target => target.LastName, opts => opts.ResolveUsing(c => c.LastName))
-                    .ForMember(target => target.Level5Name, opts => opts.ResolveUsing(c => c.Level5Name))
-                    .ForMember(target => target.Level5Number, opts => opts.ResolveUsing(c => c.Level5Number))
                     .ForMember(target => target.MaritalStatus, opts => opts.ResolveUsing(c => c.MaritalStatus))
                     .ForMember(target => target.PayRate, opts => opts.ResolveUsing(c => c.PayRate))
                     .ForMember(target => target.PayRateType, opts => opts.ResolveUsing(c => c.PayRateType))
