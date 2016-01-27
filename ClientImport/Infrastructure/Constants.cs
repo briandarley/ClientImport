@@ -32,6 +32,14 @@ namespace ClientImport.Infrastructure
 
         public static string ConfigMonroeCountySchoolBoardFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:monroeCountySchoolBoard"];
         public static string ConfigMonroeCountySchoolBoardFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:monroeCountySchoolBoard"];
+
+        public static string ConfigNefecFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:nefec"];
+        public static string ConfigNefecFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:nefec"];
+
+        public static string ConfigOcboccFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:Ocbocc"];
+        public static string ConfigOcboccFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:Ocbocc"];
+
+        
         public class Clients
         {
             
@@ -61,6 +69,16 @@ namespace ClientImport.Infrastructure
             public static string MonroeCountySchoolBoard = "Monroe County School Board";
             public static string MonroeCountySchoolBoardFullName => System.Configuration.ConfigurationManager.AppSettings["file-company-name:monroeCountySchoolBoard"];
             public static string MonroeCountySchoolBoardCompanyNumber => System.Configuration.ConfigurationManager.AppSettings["file-company-number:monroeCountySchoolBoard"];
+
+            public static string Nefec = "NEFEC";
+            public static string NefecFullName => System.Configuration.ConfigurationManager.AppSettings["file-company-name:nefec"];
+            public static string NefecCompanyNumber => System.Configuration.ConfigurationManager.AppSettings["file-company-number:nefec"];
+
+            public static string Ocbocc = "OCBOCC";
+            public static string OcboccFullName => System.Configuration.ConfigurationManager.AppSettings["file-company-name:ocbocc"];
+            public static string OcboccCompanyNumber => System.Configuration.ConfigurationManager.AppSettings["file-company-number:ocbocc"];
+
+            
         }
 
 

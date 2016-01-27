@@ -69,6 +69,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ClientModels\Client.Ocbocc\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.Ocbocc\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.Ocbocc\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.Nefec\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.Nefec\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.Nefec\Repository.cs" />
     <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\ModelBuilder.cs" />
     <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\Record.cs" />
     <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\Repository.cs" />
