@@ -49,9 +49,18 @@ namespace ClientImport.Models.ClientModels.Client.MonroeCountySchoolBoard
             FindAllFilesFromSourcePath();
 
             var allRecords = GetAllRecords().ToList();
-            _logger.TotalFilesIdentified(allRecords.Sum(c=>c.Count()));
+            var totalRecords = allRecords.Where(c => c != null).Sum(c => c.Count());
+            _logger.TotalFilesIdentified(totalRecords);
 
+            if (totalRecords == 0)
+            {
+                _logger.NoRecordsToProcessForClient(Constants.Clients.MonroeCountySchoolBoard);
+                return;
+            }
             _logger.ConvertingFileContentsFor(Constants.Clients.MonroeCountySchoolBoard);
+
+
+         
 
             foreach (var fileContents in allRecords)
             {

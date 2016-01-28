@@ -19,7 +19,8 @@ namespace ClientImport
             //Process_MiamiJewish();
             //Process_MonroeCountySchoolBoard();
             //Process_Nefec();
-            Process_Ocbcc();
+            //Process_Ocbcc();
+            Process_Osceola();
         }
 
         static void Process_Boca()
@@ -66,6 +67,12 @@ namespace ClientImport
         static void Process_Ocbcc()
         {
             var repo = new Models.ClientModels.Client.Ocbocc.Repository();
+            repo.ConvertSourceContents();
+        }
+
+        static void Process_Osceola()
+        {
+            var repo = new Models.ClientModels.Client.Osceola.Repository();
             repo.ConvertSourceContents();
         }
 

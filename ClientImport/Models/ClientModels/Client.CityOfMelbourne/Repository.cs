@@ -49,15 +49,24 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
             FindAllFilesFromSourcePath();
 
             var allRecords = GetAllRecords().ToList();
-            _logger.TotalFilesIdentified(allRecords.Sum(c=> c?.Count() ?? 0));
+            var totalRecords = allRecords.Where(c => c != null).Sum(c => c.Count());
+            _logger.TotalFilesIdentified(totalRecords);
 
+            if (totalRecords == 0)
+            {
+                _logger.NoRecordsToProcessForClient(Constants.Clients.CityOfMelbourne);
+                return;
+            }
             _logger.ConvertingFileContentsFor(Constants.Clients.CityOfMelbourne);
+
+
+
 
             foreach (var fileContents in allRecords)
             {
                 var records = ConvertClientData(fileContents);
-                var repo = new JWSModels.Repository(){Records = records};
-                
+                var repo = new JWSModels.Repository() { Records = records };
+
 
                 var outputPath = Path.Combine(Constants.DestinationDirectory, Constants.Clients.CityOfMelbourne + ".xlsx");
                 if (File.Exists(outputPath))
@@ -70,7 +79,7 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
 
         private List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
         {
-            
+
             var modelBuilder = new ModelBuilder();
             return modelBuilder.GetJwsRecordsFromClientRecords(records);
 

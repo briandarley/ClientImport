@@ -47,11 +47,19 @@ namespace ClientImport.Models.ClientModels.Client.Ocbocc
         {
             _logger.InitializingProcess(Constants.Clients.Ocbocc);
             FindAllFilesFromSourcePath();
+            
 
             var allRecords = GetAllRecords().ToList();
-            _logger.TotalFilesIdentified(allRecords.Where(c=> c!= null).Sum(c=>c.Count()));
+            var totalRecords = allRecords.Where(c => c != null).Sum(c => c.Count());
+            _logger.TotalFilesIdentified(totalRecords);
 
+            if (totalRecords == 0)
+            {
+                _logger.NoRecordsToProcessForClient(Constants.Clients.Ocbocc);
+                return;
+            }
             _logger.ConvertingFileContentsFor(Constants.Clients.Ocbocc);
+
 
             foreach (var fileContents in allRecords)
             {

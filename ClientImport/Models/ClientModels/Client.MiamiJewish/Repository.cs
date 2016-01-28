@@ -49,10 +49,17 @@ namespace ClientImport.Models.ClientModels.Client.MiamiJewish
             FindAllFilesFromSourcePath();
 
             var allRecords = GetAllRecords().ToList();
-            _logger.TotalFilesIdentified(allRecords.Sum(c=>c.Count()));
+            var totalRecords = allRecords.Where(c => c != null).Sum(c => c.Count());
+            _logger.TotalFilesIdentified(totalRecords);
 
+            if (totalRecords == 0)
+            {
+                _logger.NoRecordsToProcessForClient(Constants.Clients.MiamiJewish);
+                return;
+            }
             _logger.ConvertingFileContentsFor(Constants.Clients.MiamiJewish);
 
+            
             foreach (var fileContents in allRecords)
             {
                 var records = ConvertClientData(fileContents);

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClientImport.Infrastructure
+﻿namespace ClientImport.Infrastructure
 {
     public class Constants
     {
@@ -12,8 +6,15 @@ namespace ClientImport.Infrastructure
         /// <summary>
         /// Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES\"
         /// </summary>
-        public const string ExcelConnectionString  = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES\"";
+        public const string ExcelConnectionString  = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
 
+        /// <summary>
+        /// Provider=Microsoft.Jet.OLEDB.4.0; Data Source={0};Extended Properties=\"Excel 8.0;HDR=YES;\"
+        /// </summary>
+        /// <returns>
+        /// http://stackoverflow.com/questions/1139390/excel-external-table-is-not-in-the-expected-format
+        /// </returns>
+        public const string ExcelConnectionStringLegacyVersion = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source={0};Extended Properties=\"Excel 8.0;HDR=YES;\"";
 
         public static string ConfigBocaFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:boca"];
         public static string ConfigBocaFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:boca"];
@@ -39,7 +40,9 @@ namespace ClientImport.Infrastructure
         public static string ConfigOcboccFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:Ocbocc"];
         public static string ConfigOcboccFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:Ocbocc"];
 
-        
+        public static string ConfigOsceolaFileSource = System.Configuration.ConfigurationManager.AppSettings["file-source:osceola"];
+        public static string ConfigOsceolaFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:osceola"];
+
         public class Clients
         {
             
@@ -78,10 +81,13 @@ namespace ClientImport.Infrastructure
             public static string OcboccFullName => System.Configuration.ConfigurationManager.AppSettings["file-company-name:ocbocc"];
             public static string OcboccCompanyNumber => System.Configuration.ConfigurationManager.AppSettings["file-company-number:ocbocc"];
 
-            
+            public static string Osceola = "Osceola";
+            public static string OsceolaFullName => System.Configuration.ConfigurationManager.AppSettings["file-company-name:osceola"];
+            public static string OsceolaCompanyNumber => System.Configuration.ConfigurationManager.AppSettings["file-company-number:osceola"];
+
         }
 
 
-        
+
     }
 }

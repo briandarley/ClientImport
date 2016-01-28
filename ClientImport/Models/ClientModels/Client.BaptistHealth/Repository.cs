@@ -10,7 +10,7 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
     public class Repository : IRecords<Record>
     {
         public IEnumerable<FileInfo> FileSystemFiles { get; set; }
-        
+
         private readonly Logger _logger;
 
         public List<IRecord<Record>> Records { get; set; }
@@ -45,16 +45,25 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
             _logger.InitializingProcess(Constants.Clients.BaptistHealth);
             FindAllFilesFromSourcePath();
 
-            var allRecords = GetAllRecords().ToList();
-            _logger.TotalFilesIdentified(allRecords.Sum(c=>c.Count()));
 
+            var allRecords = GetAllRecords().ToList();
+            var totalRecords = allRecords.Where(c => c != null).Sum(c => c.Count());
+            _logger.TotalFilesIdentified(totalRecords);
+
+            if (totalRecords == 0)
+            {
+                _logger.NoRecordsToProcessForClient(Constants.Clients.BaptistHealth);
+                return;
+            }
             _logger.ConvertingFileContentsFor(Constants.Clients.BaptistHealth);
+
+
 
             foreach (var fileContents in allRecords)
             {
                 var records = ConvertClientData(fileContents);
-                var repo = new JWSModels.Repository(){Records = records};
-                
+                var repo = new JWSModels.Repository() { Records = records };
+
                 var outputPath = Path.Combine(Constants.DestinationDirectory, Constants.Clients.BaptistHealth + ".xlsx");
                 if (File.Exists(outputPath))
                 {
@@ -66,7 +75,7 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 
         private List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
         {
-            
+
             var modelBuilder = new ModelBuilder();
             return modelBuilder.GetJwsRecordsFromClientRecords(records);
 
@@ -79,7 +88,7 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
             try
             {
                 var contents = File.ReadAllText(filePath);
-                var records = contents.Split(new[] {"\n", "\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+                var records = contents.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
                 var result = records.Select(Record.GetRecord).ToList();
                 return result;

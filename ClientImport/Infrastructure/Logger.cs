@@ -52,5 +52,10 @@ namespace ClientImport.Infrastructure
         {
             _logger.Debug($"Total files identified for conversion {count}");
         }
+
+        public void NoRecordsToProcessForClient(string client)
+        {
+            _logger.Debug($"No records to process for client {client}.");
+        }
     }
 }

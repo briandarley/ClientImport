@@ -4,10 +4,11 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
 
-namespace ClientImport.Models.ClientModels.Client.Nefec
+namespace ClientImport.Models.ClientModels.Client.Osceola
 {
     public class Repository : IRecords<Record>
     {
@@ -19,16 +20,16 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
 
         public Repository()
         {
-            _filePath = Constants.ConfigNefecFileSource;
+            _filePath = Constants.ConfigOsceolaFileSource;
             _logger = new Logger();
         }
 
         private void FindAllFilesFromSourcePath()
         {
-            _logger.FindAllFilesFromSourcePath(Constants.Clients.Nefec);
-            FileSystemFiles = new DirectoryInfo(Constants.ConfigNefecFileSource)
+            _logger.FindAllFilesFromSourcePath(Constants.Clients.Osceola);
+            FileSystemFiles = new DirectoryInfo(Constants.ConfigOsceolaFileSource)
                 .GetFiles()
-                .Where(c => c.Extension.ToUpper() == "." + Constants.ConfigNefecFileExt.ToUpper())
+                .Where(c => c.Extension.ToUpper() == "." + Constants.ConfigOsceolaFileExt.ToUpper())
                 .Where(c => !c.Name.Contains("~$"));
         }
 
@@ -36,7 +37,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
         {
             foreach (var fileInfo in FileSystemFiles)
             {
-                _logger.LogGetRecordsForGivenPath(Constants.Clients.Nefec, fileInfo.FullName);
+                _logger.LogGetRecordsForGivenPath(Constants.Clients.Osceola, fileInfo.FullName);
                 IEnumerable<IRecord<Record>> records = ReadSourceFileRecords(fileInfo.FullName);
                 yield return records;
 
@@ -45,7 +46,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
 
         public void ConvertSourceContents()
         {
-            _logger.InitializingProcess(Constants.Clients.Nefec);
+            _logger.InitializingProcess(Constants.Clients.Osceola);
             FindAllFilesFromSourcePath();
 
             var allRecords = GetAllRecords().ToList();
@@ -54,17 +55,16 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
 
             if (totalRecords == 0)
             {
-                _logger.NoRecordsToProcessForClient(Constants.Clients.Nefec);
+                _logger.NoRecordsToProcessForClient(Constants.Clients.Osceola);
                 return;
             }
-            _logger.ConvertingFileContentsFor(Constants.Clients.Nefec);
-
+            _logger.ConvertingFileContentsFor(Constants.Clients.Osceola);
 
             foreach (var fileContents in allRecords)
             {
                 var records = ConvertClientData(fileContents);
-                var repo = new JWSModels.Repository(){Records = records};
-                var outputPath = Path.Combine(Constants.DestinationDirectory, Constants.Clients.Nefec + ".xlsx");
+                var repo = new JWSModels.Repository() { Records = records };
+                var outputPath = Path.Combine(Constants.DestinationDirectory, Constants.Clients.Osceola + ".xlsx");
                 if (File.Exists(outputPath))
                 {
                     File.Delete(outputPath);
@@ -75,7 +75,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
 
         private List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
         {
-            
+
             var modelBuilder = new ModelBuilder();
             return modelBuilder.GetJwsRecordsFromClientRecords(records);
 
@@ -85,8 +85,13 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
 
         private IEnumerable<IRecord<Record>> ReadSourceFileRecords(string filePath)
         {
+            //http://stackoverflow.com/questions/1139390/excel-external-table-is-not-in-the-expected-format
             try
             {
+                XmlDocument xml = new XmlDocument();
+                
+                xml.Load(filePath);
+
                 var connectionString = string.Format(Constants.ExcelConnectionString, filePath);
                 using (var cn = new OleDbConnection(connectionString))
                 {
@@ -99,7 +104,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
                         cmd.CommandText = $"select * from [{sheet1}]";
                         var dr = cmd.ExecuteReader();
 
-                        var result = new List<IRecord<Nefec.Record>>();
+                        var result = new List<IRecord<Record>>();
 
 
                         var rownum = 0;
@@ -112,7 +117,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
                                 continue;
                             }
 
-                            result.Add(Nefec.Record.GetRecord(dr));
+                            result.Add(Record.GetRecord(dr));
 
                         }
                         return result;
@@ -121,7 +126,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
             }
             catch (Exception ex)
             {
-                _logger.LogError(Constants.Clients.Nefec, ex);
+                _logger.LogError(Constants.Clients.Osceola, ex);
 
             }
             return null;
