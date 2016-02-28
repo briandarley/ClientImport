@@ -1,8 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
-using System.Linq;
-using System.Reflection;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
 
@@ -10,7 +7,7 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 {
     public class Record: IRecord<Record>
     {
-        
+        public string Tier1CompanyId { get; set; }
         [Column("Last Name")]
         public string LastName { get; set; }
         [Column("First Name")]
@@ -57,8 +54,11 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
                 ZipCode = columns[10],
                 HireDate = DateTime.Parse(columns[11])
             };
-
+            claimant.Tier1CompanyId = Constants.Clients.BaptistHealthCompanyNumber;
             return claimant;
         }
+
+        
+        
     }
 }

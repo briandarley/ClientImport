@@ -10,8 +10,8 @@ namespace ClientImport.Models.ClientModels.Client.Ocbocc
 {
     public class Record: IRecord<Record>
     {
-        
 
+        public string Tier1CompanyId { get; set; }
         [Column("Last_Name")]
         public string LastName { get; set; }
         [Column("First_Name")]
@@ -66,6 +66,7 @@ namespace ClientImport.Models.ClientModels.Client.Ocbocc
 
             
             }
+            result.Tier1CompanyId = Constants.Clients.OcboccCompanyNumber;
             return result;
             
         }

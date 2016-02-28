@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
     public class Record: IRecord<Record>
     {
         private string _maritalStatus;
-
+        public string Tier1CompanyId { get; set; }
         [Column("CENAME1")]
         public string LastName { get; set; }
         [Column("CENAME2")]
@@ -97,6 +98,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
 
             
             }
+            result.Tier1CompanyId = Constants.Clients.NefecCompanyNumber;
             return result;
             
         }

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
-using System.Data.OleDb;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
+using System.Globalization;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using OfficeOpenXml.FormulaParsing.Utilities;
+using System.Text.RegularExpressions;
 
 namespace ClientImport.Infrastructure
 {
@@ -28,6 +23,11 @@ namespace ClientImport.Infrastructure
         public static string GetString(this IDataReader dr, string column)
         {
             var index = dr.GetOrdinal(column);
+            if (dr.IsDBNull(index)) return string.Empty;
+            if (dr.GetFieldType(index) == typeof(decimal))
+            {
+                return dr.GetDecimal(index).ToString();
+            }
             return dr.GetString(index);
         }
 
@@ -35,36 +35,30 @@ namespace ClientImport.Infrastructure
         {
             try
             {
-                var result = dr.GetValue(
-                    dr.GetOrdinal(((ColumnAttribute)propertyInfo.GetCustomAttribute(typeof(ColumnAttribute))).Name)
-                    );
+                var fieldName = ((ColumnAttribute) propertyInfo.GetCustomAttribute(typeof (ColumnAttribute))).Name;
+                int ordinal;
 
+                try
+                {
+                    ordinal = dr.GetOrdinal(fieldName);
+                }
+                catch (Exception e)
+                {
+                    return DBNull.Value;
+                }
+                
+                var result = dr.GetValue(ordinal);
+                if (propertyInfo.PropertyType == typeof(double) && result != DBNull.Value)
+                {
+                    result = (double)ConvertToDecimal(result);
+                }
                 if (propertyInfo.PropertyType == typeof(decimal) && result != DBNull.Value)
                 {
-
-                    if (result is double)
-                    {
-                        return (decimal)(double)result;
-
-                    }
-                    result = (decimal)result;
-
+                    result = ConvertToDecimal(result);
                 }
                 if (propertyInfo.PropertyType == typeof(int))
                 {
-                    if (result is string && result != DBNull.Value)
-                    {
-                        if (result.ToString().Trim().Length == 0)
-                        {
-                            return string.Empty;
-                        }
-                        result = Convert.ToInt32(result);
-                    }
-                    else if (result != DBNull.Value)
-                    {
-                        result = Convert.ToInt32(result);
-                    }
-
+                    result = ConvertToInt(result);
                 }
                 if (propertyInfo.PropertyType == typeof(string) && result.GetType() != propertyInfo.PropertyType)
                 {
@@ -75,7 +69,11 @@ namespace ClientImport.Infrastructure
                 {
                     if (propertyInfo.PropertyType == typeof(decimal?) && result != DBNull.Value)
                     {
-
+                        var tmpValue = result as string;
+                        if (tmpValue != null && tmpValue.Trim().Length == 0)
+                        {
+                            return 0m;
+                        }
                         result = ChangeType<decimal>(result);
 
 
@@ -120,9 +118,71 @@ namespace ClientImport.Infrastructure
                 Console.WriteLine(e);
                 throw;
             }
-            
+
         }
 
+        public static DateTime ToDate(this string value)
+        {
+            if(string.IsNullOrEmpty(value.Trim())) return DateTime.MinValue;
+
+            return value.Contains("/") 
+                ? DateTime.Parse(value) 
+                : DateTime.ParseExact(value, "MMddyyyy", CultureInfo.InvariantCulture);
+        }
+
+        public static bool ToBool(this string value)
+        {
+            if (value.IsEmpty()) return false;
+            if (value.ToUpper() == "Y") return true;
+            if (value.ToUpper() == "YES") return true;
+            if (value.ToUpper() == "T") return true;
+            if (value.ToUpper() == "TRUE") return true;
+
+            return false;
+        }
+
+        private static int ConvertToInt(object result)
+        {
+            var stringValue = result as string;
+            if (stringValue != null && result != DBNull.Value)
+            {
+                stringValue = Regex.Replace(stringValue, @"\.0+$", "");
+                return result.ToString().Trim().Length == 0 
+                    ? 0 
+                    : int.Parse(stringValue);
+            }
+            if (result != DBNull.Value)
+            {
+                return Convert.ToInt32(result);
+            }
+            return 0;
+        }
+
+        private static decimal ConvertToDecimal(object result)
+        {
+
+            if (result is double)
+            {
+                return (decimal)(double)result;
+            }
+            var tmpVal = result as string;
+            if (tmpVal != null && Regex.IsMatch(tmpVal, "^0+"))
+            {
+                result = Regex.Replace(tmpVal, "^0+", "");
+                decimal tmpResult;
+                decimal.TryParse((string)result, out tmpResult);
+                return tmpResult;
+            }
+            return (decimal)result;
+        }
+
+        public static bool IsEmpty(this string value)
+        {
+            if (string.IsNullOrEmpty(value)) return true;
+            if (value.Trim().Length == 0) return true;
+
+            return false;
+        }
 
         public static T ChangeType<T>(object value)
         {
@@ -139,6 +199,14 @@ namespace ClientImport.Infrastructure
             }
 
             return (T)Convert.ChangeType(value, t);
+        }
+
+
+
+        public static int GetInt32(this IDataReader dr, string column)
+        {
+            var index = dr.GetOrdinal(column);
+            return dr.GetInt32(index);
         }
 
     }

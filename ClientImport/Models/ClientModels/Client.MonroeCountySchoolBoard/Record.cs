@@ -10,6 +10,7 @@ namespace ClientImport.Models.ClientModels.Client.MonroeCountySchoolBoard
 {
     public class Record: IRecord<Record>
     {
+        public string Tier1CompanyId { get; set; }
         [Column("CENAME1")]
         public string LastName { get; set; }
         [Column("CENAME2")]
@@ -76,6 +77,7 @@ namespace ClientImport.Models.ClientModels.Client.MonroeCountySchoolBoard
 
             
             }
+            result.Tier1CompanyId = Constants.Clients.MonroeCountySchoolBoardCompanyNumber;
             return result;
             
         }

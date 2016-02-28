@@ -6,7 +6,7 @@ namespace ClientImport.Models.ClientModels.Client.LeeCountySb
 {
     public class Record: IRecord<Record>
     {
-        
+        public string Tier1CompanyId { get; set; }
         [Column("Last Name")]
         public string LastName { get; set; }
         [Column("First Name")]

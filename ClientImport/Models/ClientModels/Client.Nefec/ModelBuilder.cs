@@ -1,13 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
+using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Nefec
 {
-    public class ModelBuilder
+    public class ModelBuilder : BaseModelBuilder, IModelBuilder
     {
+        public event EventHandler<ClientLogEventArgs> MissingOrganizationMappingEncountered;
+        public event EventHandler<ClientLogEventArgs> MultipleOrganizationMappingEncountered;
         public ModelBuilder()
         {
+            CompanyNumber = Constants.Clients.NefecCompanyNumber;
+            InitializeTiers();
             ConfigureMapper();
 
 
@@ -19,24 +25,18 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
 
 
                 cfg.CreateMap<Record, JWSModels.Record>()
+                    .ForMember(target => target.TierLevel, opts => opts.Ignore())
+                    .ForMember(target => target.TierLevelId, opts => opts.Ignore())
+                    .ForMember(target => target.TierName, opts => opts.Ignore())
+                    .ForMember(target => target.NumberPayPeriods, opts => opts.Ignore())
+                    .ForMember(target => target.PayRatePerPayPeriod, opts => opts.Ignore())
+                    .ForMember(target => target.AnnualHours, opts => opts.Ignore())
+                    .ForMember(target => target.AnnualPayRate, opts => opts.Ignore())
                     .ForMember(target => target.HoursWorkedPerDay, opts => opts.Ignore())
-                    .ForMember(target => target.GroupName, opts => opts.Ignore())
-                    .ForMember(target => target.DivisionName, opts => opts.Ignore())
-                    .ForMember(target => target.DepartmentName, opts => opts.Ignore())
-                    .ForMember(target => target.Level5Number, opts => opts.Ignore())
-                    .ForMember(target => target.Level5Name, opts => opts.Ignore())
-                    .ForMember(target => target.Level6Number, opts => opts.Ignore())
-                    .ForMember(target => target.Level6Name, opts => opts.Ignore())
-                    .ForMember(target => target.Level7Number, opts => opts.Ignore())
-                    .ForMember(target => target.Level7Name, opts => opts.Ignore())
                     .ForMember(target => target.AddressLine1, opts => opts.ResolveUsing(c => c.Address1))
                     .ForMember(target => target.AddressLine2, opts => opts.ResolveUsing(c => c.Address2))
                     .ForMember(target => target.City, opts => opts.ResolveUsing(c => c.City))
-                    .ForMember(target => target.CompanyName, opts => opts.ResolveUsing(c => c.CompanyName))
-                    .ForMember(target => target.CompanyNumber, opts => opts.ResolveUsing(c => c.CompanyNumber))
-                    .ForMember(target => target.GroupNumber, opts => opts.ResolveUsing(c => c.GroupNumber))
                     .ForMember(target => target.DateOfBirth, opts => opts.ResolveUsing(c => c.DateOfBirth))
-                    .ForMember(target => target.DepartmentNumber, opts => opts.ResolveUsing(c => c.DepartmentNumber))
                     .ForMember(target => target.EmployeeId, opts => opts.ResolveUsing(c => c.EmployeeId))
                     .ForMember(target => target.FirstName, opts => opts.ResolveUsing(c => c.FirstName))
                     .ForMember(target => target.Gender, opts => opts.ResolveUsing(c => c.Gender))
@@ -51,6 +51,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
                     .ForMember(target => target.SocialSecurityNumber, opts => opts.ResolveUsing(c => c.SocialSecurityNumber))
                     .ForMember(target => target.State, opts => opts.ResolveUsing(c => c.State))
                     .ForMember(target => target.ZipCode, opts => opts.ResolveUsing(c => c.ZipCode));
+                     
 
 
             });

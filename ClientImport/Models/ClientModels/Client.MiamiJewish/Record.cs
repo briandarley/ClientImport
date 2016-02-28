@@ -11,7 +11,7 @@ namespace ClientImport.Models.ClientModels.Client.MiamiJewish
     public class Record : IRecord<Record>
     {
         private string _socialSecurityNumber;
-
+        public string Tier1CompanyId { get; set; }
         [Column("F2")]//Last Name
         public string LastName { get; set; }
         [Column("F3")]//First Name
@@ -97,6 +97,7 @@ namespace ClientImport.Models.ClientModels.Client.MiamiJewish
 
 
             }
+            result.Tier1CompanyId = Constants.Clients.MiamiJewishCompanyNumber;
             return result;
 
         }

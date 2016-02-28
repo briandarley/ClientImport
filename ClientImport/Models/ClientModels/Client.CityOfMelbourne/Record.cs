@@ -10,6 +10,8 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
 {
     public class Record: IRecord<Record>
     {
+        public string Tier1CompanyId { get; set; }
+
         [Column("Last_Name")]
         public string LastName { get; set; }
         [Column("FirstName")]
@@ -116,6 +118,7 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
 
             
             }
+            result.Tier1CompanyId = Constants.Clients.CityOfMelbourneCompanyNumber;
             return result;
             
         }

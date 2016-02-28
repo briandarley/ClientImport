@@ -10,11 +10,11 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
 {
     public class Record: IRecord<Record>
     {
-        
 
+        public string Tier1CompanyId { get; set; }
         [Column("LAST NAME")]
         public string LastName { get; set; }
-        [Column("First_Name")]
+        [Column("FIRST NAME")]
         public string FirstName { get; set; }
         [Column("I")]
         public string MiddleInitial { get; set; }
@@ -78,6 +78,7 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
 
             
             }
+            result.Tier1CompanyId = Constants.Clients.OsceolaCompanyNumber;
             return result;
             
         }

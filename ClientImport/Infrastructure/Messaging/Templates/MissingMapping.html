@@ -1,0 +1,59 @@
+﻿@using System;
+@using System.Runtime.CompilerServices;
+
+<html>
+
+<body>
+    <div style="padding: 20px; width: 100%; margin: 10px;">
+        <style>
+            td {
+                text-align: center;
+            }
+
+            .text-right {
+                text-align: right;
+            }
+        </style>
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <img />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Failed - NOI Client Conversion</h4>
+                    <br />
+                    @if(Model.Clients.Length == 1)
+                    {
+                        <span>@Model.Clients[0] </span>
+                    }
+                    <table style="width:100%">
+                        <tr>
+                            <td>Level</td>
+                            <td>Name</td>
+                            <td>Parent Tier</td>
+                        </tr>
+                        @foreach(var clientOrganization in Model.Report.OrganizationInfos)
+                        {
+                        <tr>
+                            <td>@clientOrganization.Level</td>
+                            <td>@clientOrganization.Name</td>
+                            <td>@clientOrganization.ParentName</td>
+                        </tr>
+                        }
+                        
+                    </table>
+
+                </td>
+            </tr>
+
+        </table>
+
+
+
+        <br />
+
+    </div>
+</body>
+</html>

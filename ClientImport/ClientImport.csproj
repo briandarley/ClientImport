@@ -53,10 +53,18 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RazorEngine, Version=3.7.7.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RazorEngine.3.7.7\lib\net45\RazorEngine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,49 +78,88 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\ClientModels\Client.Osceola\ModelBuilder.cs" />
-    <Compile Include="Models\ClientModels\Client.Osceola\Record.cs" />
-    <Compile Include="Models\ClientModels\Client.Osceola\Repository.cs" />
-    <Compile Include="Models\ClientModels\Client.Ocbocc\ModelBuilder.cs" />
-    <Compile Include="Models\ClientModels\Client.Ocbocc\Record.cs" />
-    <Compile Include="Models\ClientModels\Client.Ocbocc\Repository.cs" />
-    <Compile Include="Models\ClientModels\Client.Nefec\ModelBuilder.cs" />
-    <Compile Include="Models\ClientModels\Client.Nefec\Record.cs" />
-    <Compile Include="Models\ClientModels\Client.Nefec\Repository.cs" />
-    <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\ModelBuilder.cs" />
-    <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\Record.cs" />
-    <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\Repository.cs" />
-    <Compile Include="Models\ClientModels\Client.MiamiJewish\ModelBuilder.cs" />
-    <Compile Include="Models\ClientModels\Client.MiamiJewish\Record.cs" />
-    <Compile Include="Models\ClientModels\Client.MiamiJewish\Repository.cs" />
-    <Compile Include="Models\ClientModels\Client.LeeCountySb\ModelBuilder.cs" />
-    <Compile Include="Models\ClientModels\Client.LeeCountySb\Record.cs" />
-    <Compile Include="Models\ClientModels\Client.LeeCountySb\Repository.cs" />
+    <Compile Include="Infrastructure\FixedLengthAttribute.cs" />
+    <Compile Include="Infrastructure\Messaging\MailManager.cs" />
+    <Compile Include="Models\ClientModels\BaseModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\BaseRepository.cs" />
     <Compile Include="Models\ClientModels\Client.BaptistHealth\ModelBuilder.cs" />
     <Compile Include="Models\ClientModels\Client.BaptistHealth\Record.cs" />
     <Compile Include="Models\ClientModels\Client.BaptistHealth\Repository.cs" />
-    <Compile Include="Models\ClientModels\Client.CityOfMelbourne\ModelBuilder.cs" />
-    <Compile Include="Models\ClientModels\Client.CityOfMelbourne\Record.cs" />
-    <Compile Include="Models\ClientModels\Client.CityOfMelbourne\Repository.cs" />
     <Compile Include="Models\ClientModels\Client.Boca\ModelBuilder.cs" />
     <Compile Include="Models\ClientModels\Client.Boca\Record.cs" />
-    <Compile Include="Models\ClientModels\Client.Boca\Repository.cs" />
     <Compile Include="Infrastructure\Constants.cs" />
     <Compile Include="Infrastructure\Extensions.cs" />
     <Compile Include="Infrastructure\Interfaces\IRecord.cs" />
     <Compile Include="Infrastructure\Interfaces\IRecords.cs" />
     <Compile Include="Infrastructure\Logger.cs" />
     <Compile Include="LogExtensions.cs" />
+    <Compile Include="Models\ClientModels\Client.Boca\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.CityOfMelbourne\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.CityOfMelbourne\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.CityOfMelbourne\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.LeeCountySb\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.LeeCountySb\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.LeeCountySb\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.MiamiJewish\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.MiamiJewish\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.MiamiJewish\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.MonroeCountySchoolBoard\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.Nefec\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.Nefec\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.Nefec\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.Ocbocc\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.Ocbocc\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.Ocbocc\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.Osceola\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.Osceola\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.Osceola\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.Pinellas\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.Pinellas\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.Pinellas\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.PolkCountySchoolBoard\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.PolkCountySchoolBoard\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.PolkCountySchoolBoard\Repository.cs" />
+    <Compile Include="Models\ClientModels\Client.SarasotaCounty\ModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\Client.SarasotaCounty\Record.cs" />
+    <Compile Include="Models\ClientModels\Client.SarasotaCounty\Repository.cs" />
+    <Compile Include="Models\ClientModels\ClientLogEventArgs.cs" />
+    <Compile Include="Models\ClientModels\ClientOrganizationInfo.cs" />
+    <Compile Include="Models\ClientModels\ClientOrganizationInfos.cs" />
+    <Compile Include="Models\ClientModels\IModelBuilder.cs" />
+    <Compile Include="Models\ClientModels\TierMapping.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\BaseTier.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\Organization.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\Tier7.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\Tier6.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\Tier5.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\Tier4.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\Tier3.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\Tier2.cs" />
+    <Compile Include="Models\JWSModels\CompanyInfo\Tier1.cs" />
     <Compile Include="Models\JWSModels\Record.cs" />
     <Compile Include="Models\JWSModels\Repository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Infrastructure\Messaging\pagebanner.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Infrastructure\Messaging\Templates\MissingMapping.html" />
+    <EmbeddedResource Include="Infrastructure\Messaging\Templates\MultipleMatches.html" />
+    <EmbeddedResource Include="Infrastructure\Messaging\Templates\SuccessTemplate.html" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

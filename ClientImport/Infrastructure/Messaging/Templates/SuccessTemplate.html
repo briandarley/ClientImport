@@ -1,0 +1,55 @@
+﻿@using System;
+@using System.Runtime.CompilerServices;
+
+<html>
+
+<body>
+    <div style="padding: 20px; width: 100%; margin: 10px;">
+        <style>
+            td {
+                text-align: center;
+            }
+
+            .text-right {
+                text-align: right;
+            }
+        </style>
+        <table>
+            <tr>
+                <td>
+                    <img/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Success - NOI Client Conversion</h4>
+                    <br/>
+                    @if(Model.Clients.Length == 1)
+                    {
+                        <div>@Model.Clients[0] was successfully converted with no errors.</div>
+                    }
+                    else{
+                            <div>The following clients were successfully converted with no errors.</div>
+                            foreach(var client in Model.Clients )
+                            {
+                                <p>@client</p>
+
+                            }
+
+
+                    }
+                    
+
+                    
+                </td>
+            </tr>
+
+        </table>
+        
+       
+        
+        <br />
+        
+    </div>
+</body>
+</html>

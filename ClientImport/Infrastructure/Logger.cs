@@ -57,5 +57,15 @@ namespace ClientImport.Infrastructure
         {
             _logger.Debug($"No records to process for client {client}.");
         }
+
+        public void ArchivingSourceFIles(string client)
+        {
+            _logger.Debug($"Archiving records for {client}.");
+        }
+
+        public void LogGeneralMessage(string message)
+        {
+            _logger.Debug(message);
+        }
     }
 }

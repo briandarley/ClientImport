@@ -51,6 +51,8 @@ namespace ClientImport.Models.JWSModels
             {
                 foreach (var record in Records)
                 {
+                    if(record == null) continue;
+                    record.NormalizeFields();
                     foreach (var propertyInfo in propertyInfos)
                     {
                         var colAttribute = propertyInfo.GetCustomAttribute<ColumnAttribute>();
@@ -59,10 +61,18 @@ namespace ClientImport.Models.JWSModels
 
                         if (propertyInfo.PropertyType == typeof (DateTime))
                         {
-                            ws.Cells[$"{colMap}{row}"].Style.Numberformat.Format = "yyyy-mm-dd";
+                            ws.Cells[$"{colMap}{row}"].Style.Numberformat.Format = "mm/dd/yyyy";
                         }
-
-                        ws.Cells[$"{colMap}{row}"].Value = colValue;
+                        if (propertyInfo.Name == "Tier1CompanyId" && colValue != null)
+                        {
+                            ws.Cells[$"{colMap}{row}"].Value = colValue.ToString().PadLeft(6, '0');
+                            
+                        }
+                        else
+                        {
+                            ws.Cells[$"{colMap}{row}"].Value = colValue;
+                        }
+                        
 
 
 

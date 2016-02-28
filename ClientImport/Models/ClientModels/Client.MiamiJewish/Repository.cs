@@ -2,35 +2,68 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
-using System.IO;
-using System.Linq;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.MiamiJewish
 {
-    public class Repository : IRecords<Record>
+    public class Repository : BaseRepository<Record>
     {
-        public IEnumerable<FileInfo> FileSystemFiles { get; set; }
-        private readonly string _filePath;
-        private Logger _logger;
-
-        public List<IRecord<Record>> Records { get; set; }
-
-        public Repository()
+        private ClientOrganizationInfos _multipleOrganizationMappings;
+        private ClientOrganizationInfos _missingOrganizationMappings;
+        public override ClientOrganizationInfos MultipleOrganizationMappings
         {
-            _filePath = Constants.ConfigMiamiJewishFileSource;
-            _logger = new Logger();
+            get { return _multipleOrganizationMappings ?? (_multipleOrganizationMappings = new ClientOrganizationInfos()); }
+            set { _multipleOrganizationMappings = value; }
         }
 
-        private void FindAllFilesFromSourcePath()
+        public override ClientOrganizationInfos MissingOrganizationMappings
         {
-            _logger.FindAllFilesFromSourcePath(Constants.Clients.MiamiJewish);
-            FileSystemFiles = new DirectoryInfo(Constants.ConfigMiamiJewishFileSource)
-                .GetFiles()
-                .Where(c => c.Extension.ToUpper() == "." + Constants.ConfigMiamiJewishFileExt.ToUpper())
-                .Where(c => !c.Name.Contains("~$"));
+            get
+            {
+                return _missingOrganizationMappings ?? (_missingOrganizationMappings = new ClientOrganizationInfos());
+            }
+            set { _missingOrganizationMappings = value; }
         }
+
+        public override void OnMultipleOrganizationMappingEncountered(object sender, ClientLogEventArgs e)
+        {
+            if (MultipleOrganizationMappings == null)
+            { MultipleOrganizationMappings = new ClientOrganizationInfos(); }
+
+            if (MultipleOrganizationMappings.Any(c => c.Name == e.Name && c.ParentName == e.ParentName)) return;
+            MultipleOrganizationMappings.Add(new ClientOrganizationInfo
+            {
+                Level = e.Level,
+                Name = e.Name,
+                ParentName = e.ParentName
+            });
+
+        }
+
+        public override void OnMissingOrganizationMappingEncountered(object sender, ClientLogEventArgs e)
+        {
+            if (MissingOrganizationMappings == null)
+            { MissingOrganizationMappings = new ClientOrganizationInfos(); }
+            if (MissingOrganizationMappings.Any(c => c.Name == e.Name && c.ParentName == e.ParentName)) return;
+
+            MissingOrganizationMappings.Add(new ClientOrganizationInfo
+            {
+                Level = e.Level,
+                Name = e.Name,
+                ParentName = e.ParentName
+            });
+        }
+
+
+        public Repository() : base(Constants.Clients.MiamiJewish, Constants.ConfigMiamiJewishFileSource, Constants.ConfigMiamiJewishFileExt)
+        { }
+
+
+
+
+     
+
 
         private IEnumerable<IEnumerable<IRecord<Record>>> GetAllRecords()
         {
@@ -43,47 +76,21 @@ namespace ClientImport.Models.ClientModels.Client.MiamiJewish
             }
         }
 
-        public void ConvertSourceContents()
-        {
-            _logger.InitializingProcess(Constants.Clients.MiamiJewish);
-            FindAllFilesFromSourcePath();
+   
 
-            var allRecords = GetAllRecords().ToList();
-            var totalRecords = allRecords.Where(c => c != null).Sum(c => c.Count());
-            _logger.TotalFilesIdentified(totalRecords);
-
-            if (totalRecords == 0)
-            {
-                _logger.NoRecordsToProcessForClient(Constants.Clients.MiamiJewish);
-                return;
-            }
-            _logger.ConvertingFileContentsFor(Constants.Clients.MiamiJewish);
-
-            
-            foreach (var fileContents in allRecords)
-            {
-                var records = ConvertClientData(fileContents);
-                var repo = new JWSModels.Repository(){Records = records};
-                var outputPath = Path.Combine(Constants.DestinationDirectory, Constants.Clients.MiamiJewish + ".xlsx");
-                if (File.Exists(outputPath))
-                {
-                    File.Delete(outputPath);
-                }
-                repo.WriteRecordsToExcelFile(outputPath);
-            }
-        }
-
-        private List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
+        protected override List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
         {
             
             var modelBuilder = new ModelBuilder();
+            modelBuilder.MissingOrganizationMappingEncountered += OnMissingOrganizationMappingEncountered;
+            modelBuilder.MultipleOrganizationMappingEncountered += OnMultipleOrganizationMappingEncountered;
             return modelBuilder.GetJwsRecordsFromClientRecords(records);
 
         }
 
 
 
-        private IEnumerable<IRecord<Record>> ReadSourceFileRecords(string filePath)
+        protected override IEnumerable<IRecord<Record>> ReadSourceFileRecords(string filePath)
         {
             try
             {

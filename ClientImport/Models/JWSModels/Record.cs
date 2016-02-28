@@ -1,89 +1,112 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Reflection;
 
 namespace ClientImport.Models.JWSModels
 {
     public class Record
     {
-        [Column("Last Name"), MaxLength(40)]
+        [Column("Last_Name"), MaxLength(40)]
         public string LastName { get; set; }
-        [Column("First Name"), MaxLength(40)]
+        [Column("First_Name"), MaxLength(40)]
         public string FirstName { get; set; }
-        [Column("Middle Initial"), MaxLength(1)]
+        [Column("Middle_Initial"), MaxLength(1)]
         public string MiddleInitial { get; set; }
-        [Column("Name Suffix"), MaxLength(4)]
+        [Column("Name_Suffix"), MaxLength(4)]
         public string NameSuffix { get; set; }
-        [Column("Social Security Number"), MaxLength(9)]
+        [Column("SSN"), MaxLength(9)]
         public string SocialSecurityNumber { get; set; }
-        [Column("Gender"), MaxLength(1)]
+        [Column("Sex"), MaxLength(1)]
         public string Gender { get; set; }
-        [Column("Date of Birth")]
+        [Column("Birth_Date")]
         public DateTime DateOfBirth { get; set; }
-        [Column("Marital Status"), MaxLength(1)]
+        [Column("Marital_Status"), MaxLength(1)]
         public string MaritalStatus { get; set; }
-        [Column("Address Line 1"), MaxLength(40)]
+        [Column("Address1"), MaxLength(40)]
         public string AddressLine1 { get; set; }
-        [Column("Address Line 2"), MaxLength(40)]
+        [Column("Address2"), MaxLength(40)]
         public string AddressLine2 { get; set; }
         [Column("City"), MaxLength(20)]
         public string City { get; set; }
         [Column("State"), MaxLength(2)]
         public string State { get; set; }
-        [Column("Zip Code"), MaxLength(9)]
+        [Column("Zip"), MaxLength(9)]
         public string ZipCode { get; set; }
-        [Column("Phone Number"), MaxLength(10)]
+        [Column("Phone"), MaxLength(10)]
         public string PhoneNumber { get; set; }
-        [Column("Employee ID"), MaxLength(20)]
+        [Column("Employee_ID"), MaxLength(20)]
         public string EmployeeId { get; set; }
-        [Column("Pay Rate Type"), MaxLength(1)]
+        [Column("Pay_Rate_Type"), MaxLength(1)]
         public string PayRateType { get; set; }
-        [Column("Pay Rate")]
+        [Column("Pay_Rate")]
         public decimal PayRate { get; set; }
-        [Column("Hours Worked Per Day")]
+        [Column("Hours_Worked_Per_Day")]
         public decimal HoursWorkedPerDay { get; set; }
-        [Column("Days Worked Per Week")]
-        public decimal DaysWorkedPerWeek{ get; set; }
-        [Column("Hire Date")]
+        [Column("Days_Worked_Per_Week")]
+        public decimal DaysWorkedPerWeek { get; set; }
+        [Column("Hire_Date")]
         public DateTime HireDate { get; set; }
-        [Column("Job Class Code"), MaxLength(6)]
+        [Column("Job_Class_Code"), MaxLength(6)]
         public string JobClassCode { get; set; }
-        [Column("Job Description"), MaxLength(60)]
+        [Column("Job_Description"), MaxLength(60)]
         public string JobDescription { get; set; }
-        [Column("Occupation Code"), MaxLength(4)]
+        [Column("Occupation_Code"), MaxLength(4)]
         public string OccupationCode { get; set; }
-        [Column("Union Code"), MaxLength(10)]
-        public string UnionCode{ get; set; }
-        [Column("Group Name"), MaxLength(40)]
-        public string GroupName { get; set; }
-        [Column("Group Number")]
-        public int GroupNumber{ get; set; }
-        [Column("Company Name"), MaxLength(40)]
-        public string CompanyName { get; set; }
-        [Column("Company Number")]
-        public int CompanyNumber{ get; set; }
-        [Column("Division Number"), MaxLength(11)]
-        public string DivisionNumber { get; set; }
-        [Column("Division Name"), MaxLength(10)]
-        public string DivisionName{ get; set; }
-        [Column("Department Number"), MaxLength(11)]
-        public string DepartmentNumber{ get; set; }
-        [Column("Department Name"), MaxLength(40)]
-        public string DepartmentName { get; set; }
-        [Column("Level 5 Number"), MaxLength(11)]
-        public string Level5Number { get; set; }
-        [Column("Level 5 Name"), MaxLength(40)]
-        public string Level5Name { get; set; }
-        [Column("Level 6 Number"), MaxLength(11)]
-        public string Level6Number { get; set; }
-        [Column("Level 6 Name"), MaxLength(40)]
-        public string Level6Name { get; set; }
-        [Column("Level 7 Number"), MaxLength(11)]
-        public string Level7Number { get; set; }
-        [Column("Level 7 Name"), MaxLength(40)]
-        public string Level7Name { get; set; }
+        [Column("Union_Code"), MaxLength(10)]
+        public string UnionCode { get; set; }
 
-        
+
+
+        //[Column("Group Name"), MaxLength(40)]
+        //public string GroupName { get; set; }
+        //[Column("Group Number")]
+        //public int GroupNumber{ get; set; }
+        //[Column("Tier1_Company_id"), MaxLength(40)]
+        //public string CompanyName { get; set; }
+        [Column("Tier1_Company_id")]
+        public string Tier1CompanyId { get; set; }
+        [Column("Tier_Level")]
+        public int TierLevel { get; set; }
+        [Column("Tier_level_id")]
+        public string TierLevelId { get; set; }
+        [Column("Cost_Center_Name")]
+        public string TierName { get; set; }
+        [Column("User_Level")]
+        public string UserLevel { get; set; }
+        [Column("Index_Code")]
+        public string IndexCode { get; set; }
+        [Column("Number_Pay_Periods")]
+        public int NumberPayPeriods { get; set; }
+        [Column("Pay_Rate_per_pay_period")]
+        public decimal PayRatePerPayPeriod { get; set; }
+        [Column("Annual_Hours")]
+        public double AnnualHours { get; set; }
+        [Column("Annual_Pay_Rate")]
+        public decimal AnnualPayRate { get; set; }
+
+        public void NormalizeFields()
+        {
+            var properties = GetType().GetProperties().Where(c => c.GetCustomAttribute<MaxLengthAttribute>() != null).ToList();
+
+            foreach (var propertyInfo in properties)
+            {
+                var maxLength = propertyInfo.GetCustomAttribute<MaxLengthAttribute>();
+                var value = (string)propertyInfo.GetValue(this, BindingFlags.Public |  BindingFlags.Instance, null,null, null);
+                if (value != null && value.Length > maxLength.Length)
+                {
+                    value = value.Substring(0, maxLength.Length);
+                    propertyInfo.SetValue(this, value);
+                }
+                
+                
+            }
+        }
+
+
+     
+
 
     }
 }
