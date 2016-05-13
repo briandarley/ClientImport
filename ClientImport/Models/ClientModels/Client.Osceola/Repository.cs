@@ -9,6 +9,9 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
 {
     public class Repository : BaseRepository<Record>
     {
+
+        public sealed override string Tier2NullValue { get; set; }
+
         private ClientOrganizationInfos _multipleOrganizationMappings;
         private ClientOrganizationInfos _missingOrganizationMappings;
         public override ClientOrganizationInfos MultipleOrganizationMappings
@@ -41,6 +44,8 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
 
         }
 
+        
+
         public override void OnMissingOrganizationMappingEncountered(object sender, ClientLogEventArgs e)
         {
             if (MissingOrganizationMappings == null)
@@ -59,9 +64,11 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
 
 
         public Repository() : base(Constants.Clients.Osceola, Constants.ConfigOsceolaFileSource, Constants.ConfigOsceolaFileExt)
-        { }
+        {
+            Tier2NullValue = "000192";
+        }
 
-        
+
 
         protected override List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
         {
@@ -80,7 +87,7 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
             //http://stackoverflow.com/questions/1139390/excel-external-table-is-not-in-the-expected-format
             try
             {
-                
+
 
                 var connectionString = string.Format(Constants.ExcelConnectionString, filePath);
                 using (var cn = new OleDbConnection(connectionString))

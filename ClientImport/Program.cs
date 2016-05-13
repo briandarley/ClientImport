@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Messaging;
 using ClientImport.Models.ClientModels;
@@ -17,18 +19,21 @@ namespace ClientImport
             var runList = new List<KeyValuePair<string, Action>>
             {
 
-                new KeyValuePair<string, Action>(Constants.Clients.Boca ,Process_Boca),
-                new KeyValuePair<string, Action>(Constants.Clients.BaptistHealth, Process_BaptistHealth),
+                //new KeyValuePair<string, Action>(Constants.Clients.Boca ,Process_Boca),
+                //new KeyValuePair<string, Action>(Constants.Clients.BaptistHealth, Process_BaptistHealth),
                 new KeyValuePair<string, Action>(Constants.Clients.CityOfMelbourne ,Process_CityOfMelbourne),
-                new KeyValuePair<string, Action>(Constants.Clients.LeeCountySchoolBoard ,Process_LeeCountSchoolBoard),
-                new KeyValuePair<string, Action>(Constants.Clients.MiamiJewish ,Process_MiamiJewish),
-                new KeyValuePair<string, Action>(Constants.Clients.MonroeCountySchoolBoard ,Process_MonroeCountySchoolBoard),
-                new KeyValuePair<string, Action>(Constants.Clients.Nefec ,Process_Nefec),
-                new KeyValuePair<string, Action>(Constants.Clients.Ocbocc ,Process_Ocbcc),
-                new KeyValuePair<string, Action>(Constants.Clients.Osceola ,Process_Osceola),
-                new KeyValuePair<string, Action>(Constants.Clients.Pinellas ,Process_Pinellas),
-                new KeyValuePair<string, Action>(Constants.Clients.PolkCountySchoolBoard ,Process_PolkCountySchoolBoard),
-                new KeyValuePair<string, Action>(Constants.Clients.SarasotaCounty ,Process_SarasotaCounty        )
+                //new KeyValuePair<string, Action>(Constants.Clients.LeeCountySchoolBoard ,Process_LeeCountSchoolBoard),
+                //new KeyValuePair<string, Action>(Constants.Clients.MiamiJewish ,Process_MiamiJewish),
+                //new KeyValuePair<string, Action>(Constants.Clients.MonroeCountySchoolBoard ,Process_MonroeCountySchoolBoard),
+                //new KeyValuePair<string, Action>(Constants.Clients.Nefec ,Process_Nefec),
+                //new KeyValuePair<string, Action>(Constants.Clients.Ocbocc ,Process_Ocbcc),
+                //new KeyValuePair<string, Action>(Constants.Clients.Osceola ,Process_Osceola),
+                //new KeyValuePair<string, Action>(Constants.Clients.Pinellas ,Process_Pinellas),
+                //new KeyValuePair<string, Action>(Constants.Clients.PolkCountySchoolBoard ,Process_PolkCountySchoolBoard),
+                //new KeyValuePair<string, Action>(Constants.Clients.SarasotaCounty ,Process_SarasotaCounty        )
+
+
+                //new KeyValuePair<string, Action>(Constants.Clients.BaptistHealth, Process_BaptistHealth),
             };
             foreach (var action in runList)
             {
@@ -39,6 +44,8 @@ namespace ClientImport
                 catch (Exception ex)
                 {
                     logger.LogError(action.Key, ex);
+                    logger.LogGeneralMessage("Stack Trace");
+                    logger.LogGeneralMessage(ex.StackTrace);
                     throw;
                 }
             }
@@ -63,7 +70,7 @@ namespace ClientImport
             //var missingMappingsReport = repo.MissingOrganizationMappings.ToString();
             //var multiplMappingsReport = repo.MultipleOrganizationMappings.ToString();
             //var values = new[] { Constants.Clients.Boca, missingMappingsReport };
-            GenerateReport(new[] { Constants.Clients.Boca }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.Boca }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -82,7 +89,7 @@ namespace ClientImport
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
 
-            GenerateReport(new[] { Constants.Clients.BaptistHealth }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.BaptistHealth }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -97,7 +104,7 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.CityOfMelbourne.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.CityOfMelbourne }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.CityOfMelbourne }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -112,7 +119,7 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.LeeCountySb.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.LeeCountySchoolBoardFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.LeeCountySchoolBoardFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -127,7 +134,7 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.MiamiJewish.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.LeeCountySchoolBoardFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.LeeCountySchoolBoardFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -142,7 +149,7 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.MonroeCountySchoolBoard.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.MonroeCountySchoolBoard }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.MonroeCountySchoolBoard }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -157,7 +164,7 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.Nefec.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.NefecFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.NefecFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -172,7 +179,7 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.Ocbocc.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.OcboccFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.OcboccFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -187,7 +194,11 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.Osceola.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.OsceolaFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            
+            
+            GenerateLoaclFileReport(Constants.Clients.Osceola,new[] { Constants.Clients.OsceolaFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings); 
+
+            GenerateEmailReport(new[] { Constants.Clients.OsceolaFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -202,7 +213,7 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.Pinellas.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.PinellasName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.PinellasName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -218,7 +229,7 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.PolkCountySchoolBoard.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.PolkCountySchoolBoardName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.PolkCountySchoolBoardName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
@@ -234,12 +245,56 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.SarasotaCounty.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateReport(new[] { Constants.Clients.SarasotaCountyName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateEmailReport(new[] { Constants.Clients.SarasotaCountyName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
 
-        private static void GenerateReport(string[] clients, ClientOrganizationInfos missingMappingsReport, ClientOrganizationInfos multiplMappingsReport)
+        private static void GenerateLoaclFileReport(string clientName, string[] clients, ClientOrganizationInfos missingMappingsReport, ClientOrganizationInfos multiplMappingsReport)
+        {
+            var basePath = $@"{Constants.BaseDestinationPath}\{clientName}\";
+            var sb = new StringBuilder();
+            
+
+            if (missingMappingsReport.Any())
+            {
+                var filePath = basePath + "Missing Mapping Report.txt";
+                sb.Append("Clients:\n");
+                foreach (var client in clients)
+                {
+                    sb.Append(client + "\n");
+                }
+                sb.Append("\n\n");
+                missingMappingsReport.OrganizationInfos = missingMappingsReport.OrganizationInfos
+                    .OrderBy(c => c.Level)
+                    .ThenBy(c => c.Name).ToList();
+
+                sb.AppendFormat("{0, -10}{1, -50}{2,-50}", "Level", "Organization Name", "Parent Name");
+                foreach (var clientOrganizationInfo in missingMappingsReport.OrganizationInfos)
+                {
+                    if (clientOrganizationInfo.Level > 3)
+                    {
+                        sb.AppendFormat("{0, -10}{1, -50}{2,-50}", clientOrganizationInfo.Level,clientOrganizationInfo.Name,clientOrganizationInfo.ParentName);
+                    }
+                    else
+                    {
+                        sb.AppendFormat("{0, -10}{1, -50}", clientOrganizationInfo.Level, clientOrganizationInfo.Name);
+                    }
+                    sb.Append("\n");
+                }
+                File.WriteAllText(filePath, sb.ToString());
+
+            }
+            if (multiplMappingsReport.Any())
+            {
+            
+                missingMappingsReport.OrganizationInfos = missingMappingsReport.OrganizationInfos.OrderBy(c => c.Level).ThenBy(c => c.Name).ToList();
+                
+            }
+
+            
+        }
+        private static void GenerateEmailReport(string[] clients, ClientOrganizationInfos missingMappingsReport, ClientOrganizationInfos multiplMappingsReport)
         {
             var sendSuccessNotice = true;
             var mailManager = new MailManager(Constants.Resources.SmtpFrom, Constants.Resources.SmtpServer,

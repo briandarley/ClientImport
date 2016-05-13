@@ -11,7 +11,7 @@ namespace ClientImport.Models.ClientModels.Client.Boca
 {
     public class Repository : BaseRepository<Record>
     {
-
+        public sealed override string Tier2NullValue { get; set; }
         private ClientOrganizationInfos _multipleOrganizationMappings;
         private ClientOrganizationInfos _missingOrganizationMappings;
 

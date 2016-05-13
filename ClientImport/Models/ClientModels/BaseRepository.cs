@@ -17,7 +17,7 @@ namespace ClientImport.Models.ClientModels
         public abstract ClientOrganizationInfos MissingOrganizationMappings { get; set; }
         public abstract void OnMissingOrganizationMappingEncountered(object sender, ClientLogEventArgs e);
         public abstract void OnMultipleOrganizationMappingEncountered(object sender, ClientLogEventArgs e);
-        
+        public abstract string Tier2NullValue { get; set; }
         public IEnumerable<FileInfo> FileSystemFiles { get; set; }
         public List<IRecord<T>> Records { get; set; }
 
@@ -64,14 +64,22 @@ namespace ClientImport.Models.ClientModels
             }
             _logger.ConvertingFileContentsFor(ClientName);
 
-
-
-
-
+            
             foreach (var fileContents in allRecords)
             {
+                if(fileContents== null) continue;
+                
                 var records = ConvertClientData(fileContents);
-                var repo = new JWSModels.Repository() { Records = records };
+                foreach (var record in records)
+                {
+                    record.Format();
+                    if (record.TierLevel == 2)
+                    {
+                        record.TierLevelId = Tier2NullValue;
+                    }
+                }
+                
+                var repo = new JWSModels.Repository { Records = records };
 
 
                 var basePath = $@"{Constants.BaseDestinationPath}\{ClientName}\";
@@ -87,6 +95,11 @@ namespace ClientImport.Models.ClientModels
                 }
                 repo.WriteRecordsToExcelFile(outputPath);
             }
+
+
+
+
+
             return totalRecords;
         }
         protected void FindAllFilesFromSourcePath()

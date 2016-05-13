@@ -11,6 +11,7 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
 {
     public class Repository : BaseRepository<Record>
     {
+        public sealed override string Tier2NullValue { get; set; }
         private ClientOrganizationInfos _multipleOrganizationMappings;
         private ClientOrganizationInfos _missingOrganizationMappings;
         public override ClientOrganizationInfos MultipleOrganizationMappings
@@ -75,7 +76,9 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
         {
             try
             {
-                var connectionString = string.Format(Constants.ExcelConnectionString, filePath);
+                var root = System.IO.Path.GetDirectoryName(filePath);
+
+                var connectionString = string.Format(Constants.CsvConnectionString, root) ;
                 using (var cn = new OleDbConnection(connectionString))
                 {
                     cn.Open();

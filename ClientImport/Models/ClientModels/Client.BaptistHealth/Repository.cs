@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
 
@@ -9,6 +11,8 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 {
     public class Repository : BaseRepository<Record>
     {
+        public sealed override string Tier2NullValue { get; set; }
+
         private ClientOrganizationInfos _multipleOrganizationMappings;
         private ClientOrganizationInfos _missingOrganizationMappings;
 
@@ -59,7 +63,9 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 
 
         public Repository() : base(Constants.Clients.BaptistHealth, Constants.ConfigBaptistHealthFileSource, Constants.ConfigBaptistHealthFileExt)
-        { }
+        {
+            Tier2NullValue = "000108";
+        }
 
 
 
@@ -75,12 +81,57 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
         }
 
 
-
+        
         protected override List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
         {
-            
+
             var modelBuilder = new ModelBuilder();
             var modelRecords = modelBuilder.GetJwsRecordsFromClientRecords(records);
+
+
+            foreach (var record in modelRecords)
+            {
+                //if (record.TierLevel == 0)
+                //{
+                //    record.TierLevel = 2;
+                //}
+                record.TierLevelId = "000108";//Constants.Clients.BaptistHealthCompanyNumber.PadLeft(6, '0');
+
+                //if (string.IsNullOrEmpty(record.ZipCode))
+                //{
+                //    record.ZipCode = "00000";
+                //}
+                //if (record.ZipCode.Contains("-"))
+                //{
+                //    record.ZipCode = Regex.Match(record.ZipCode, @"^\d+").Value;
+                //}
+                //if (string.IsNullOrEmpty(record.AddressLine1))
+                //{
+                //    record.AddressLine1 = "x";
+                //}
+                //if (string.IsNullOrEmpty(record.City))
+                //{
+                //    record.City = "x";
+                //}
+                //if (string.IsNullOrEmpty(record.State))
+                //{
+                //    record.State = "FL";
+                //}
+                //if (record.DateOfBirth == DateTime.MinValue)
+                //{
+                //    record.DateOfBirth = new DateTime(1950, 1, 1);
+                //}
+                //if (string.IsNullOrEmpty(record.MaritalStatus))
+                //{
+                //    record.MaritalStatus = "Unknown";
+                //}
+                //if (string.IsNullOrEmpty(record.SocialSecurityNumber))
+                //{
+                //    record.SocialSecurityNumber = new string('0', 9);
+                //}
+                //record.SocialSecurityNumber = record.SocialSecurityNumber.PadLeft(9, '0');
+            }
+
             return modelRecords;
 
         }

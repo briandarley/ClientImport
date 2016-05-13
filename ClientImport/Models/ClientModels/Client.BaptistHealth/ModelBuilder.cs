@@ -6,6 +6,7 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 {
     public class ModelBuilder : BaseModelBuilder
     {
+
         public event EventHandler<ClientLogEventArgs> MissingOrganizationMappingEncountered;
         public event EventHandler<ClientLogEventArgs> MultipleOrganizationMappingEncountered;
 

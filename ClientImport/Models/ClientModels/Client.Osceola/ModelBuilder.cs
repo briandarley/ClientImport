@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
@@ -52,6 +53,8 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
                              tierMapping.MapOrgLevel(Tiers3, 3, src.DivisionName.ToUpper(), src.DivisionName.ToUpper(),
                                  MissingOrganizationMappingEncountered, MultipleOrganizationMappingEncountered);
 
+                             
+
                          }
 
 
@@ -65,6 +68,15 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)
         {
             var result = Mapper.Map<List<JWSModels.Record>>(records);
+            if (records == null)
+            {
+                throw new Exception("Source records are null, WTF?");
+            }
+
+            if (result == null && records.Any())
+            {
+                throw new Exception("Could not convert records using defined mapper");
+            }
             return result;
         }
     }

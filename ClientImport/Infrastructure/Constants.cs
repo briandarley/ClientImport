@@ -9,6 +9,7 @@
         /// Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES\"
         /// </summary>
         public const string ExcelConnectionString  = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+        public const string CsvConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Extended Properties=\"Text;HDR=YES;FMT=Delimited;\"";
 
         /// <summary>
         /// Provider=Microsoft.Jet.OLEDB.4.0; Data Source={0};Extended Properties=\"Excel 8.0;HDR=YES;\"
@@ -18,53 +19,53 @@
         /// </returns>
         public const string ExcelConnectionStringLegacyVersion = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source={0};Extended Properties=\"Excel 8.0;HDR=YES;\"";
 
-        public static string ConfigBocaFileSource = BaseSourcePath  + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:boca"];
+        public static string ConfigBocaFileSource = BaseSourcePath  + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:boca"];
         public static string ConfigBocaFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:boca"];
         public static bool ConfigBocaEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:boca"].ToBool();
 
-        public static string ConfigBaptistHealthFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:baptistHealth"];
+        public static string ConfigBaptistHealthFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:baptistHealth"];
         public static string ConfigBaptistHealthFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:baptistHealth"];
         public static bool ConfigBaptistHealthEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:baptistHealth"].ToBool();
 
 
-        public static string ConfigCityOfMelbourneFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:cityOfMelbourne"];
+        public static string ConfigCityOfMelbourneFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:cityOfMelbourne"];
         public static string ConfigCityOfMelbourneFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:cityOfMelbourne"];
         public static bool ConfigCityOfMelbourneEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:cityOfMelbourne"].ToBool();
 
 
-        public static string ConfigLeeCountySbFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:leeCounty"];
+        public static string ConfigLeeCountySbFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:leeCounty"];
         public static string ConfigLeeCountySbFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:leeCounty"];
         public static bool ConfigLeeCountySbEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:leeCounty"].ToBool();
 
-        public static string ConfigMiamiJewishFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:miamiJewish"];
+        public static string ConfigMiamiJewishFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:miamiJewish"];
         public static string ConfigMiamiJewishFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:miamiJewish"];
         public static bool ConfigMiamiJewishEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:miamiJewish"].ToBool();
 
-        public static string ConfigMonroeCountySchoolBoardFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:monroeCountySchoolBoard"];
+        public static string ConfigMonroeCountySchoolBoardFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:monroeCountySchoolBoard"];
         public static string ConfigMonroeCountySchoolBoardFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:monroeCountySchoolBoard"];
         public static bool ConfigMonroeCountySchoolBoardEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:monroeCountySchoolBoard"].ToBool();
 
-        public static string ConfigNefecFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:nefec"];
+        public static string ConfigNefecFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:nefec"];
         public static string ConfigNefecFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:nefec"];
         public static bool ConfigNefecEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:nefec"].ToBool();
 
-        public static string ConfigOcboccFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:Ocbocc"];
+        public static string ConfigOcboccFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:Ocbocc"];
         public static string ConfigOcboccFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:Ocbocc"];
         public static bool ConfigOcboccEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:Ocbocc"].ToBool();
 
-        public static string ConfigOsceolaFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:osceola"];
+        public static string ConfigOsceolaFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:osceola"];
         public static string ConfigOsceolaFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:osceola"];
         public static bool ConfigOsceolaEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:osceola"].ToBool();
 
-        public static string ConfigPinellasFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:pinellas"];
+        public static string ConfigPinellasFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:pinellas"];
         public static string ConfigPinellasFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:pinellas"];
         public static bool ConfigPinellasEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:pinellas"].ToBool();
 
-        public static string ConfigPolkCountySchoolBoardFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:polkCountySchoolBoard"];
+        public static string ConfigPolkCountySchoolBoardFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:polkCountySchoolBoard"];
         public static string ConfigPolkCountySchoolBoardFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:polkCountySchoolBoard"];
         public static bool ConfigPolkCountySchoolBoardEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:polkCountySchoolBoard"].ToBool();
 
-        public static string ConfigSarasotaCountyFileSource = BaseSourcePath + "/" + System.Configuration.ConfigurationManager.AppSettings["file-source:sarasotaCounty"];
+        public static string ConfigSarasotaCountyFileSource = BaseSourcePath + @"\" + System.Configuration.ConfigurationManager.AppSettings["file-source:sarasotaCounty"];
         public static string ConfigSarasotaCountyFileExt = System.Configuration.ConfigurationManager.AppSettings["file-extension:sarasotaCounty"];
         public static bool ConfigSarasotaCountyEnabled = System.Configuration.ConfigurationManager.AppSettings["file-enabled:sarasotaCounty"].ToBool();
 

@@ -31,6 +31,7 @@ namespace ClientImport.Models.ClientModels
             EventHandler<ClientLogEventArgs> multMaping
             )
         {
+            
             var levelList = levelMappings
                 .Where(c => c.ParentTier.Name.ToUpper() == parentName.ToUpper())
                 .Where(c => c.Name.ToUpper() == name.ToUpper())
@@ -79,8 +80,9 @@ namespace ClientImport.Models.ClientModels
                 {
                     var organization = levelList.FirstOrDefault();
                     _record.TierLevel = level;
-                    _record.Tier1CompanyId = organization.Key.Id;
+                    //_record.Tier1CompanyId = organization.Key.Id;
                     _record.TierName = organization.Key.Name;
+                    _record.TierLevelId = organization.Key.Id;
                 }
                 else
                 {

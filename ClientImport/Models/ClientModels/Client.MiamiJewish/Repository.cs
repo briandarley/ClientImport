@@ -9,6 +9,7 @@ namespace ClientImport.Models.ClientModels.Client.MiamiJewish
 {
     public class Repository : BaseRepository<Record>
     {
+        public sealed override string Tier2NullValue { get; set; }
         private ClientOrganizationInfos _multipleOrganizationMappings;
         private ClientOrganizationInfos _missingOrganizationMappings;
         public override ClientOrganizationInfos MultipleOrganizationMappings
