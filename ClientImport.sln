@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.BaptistHealth", "Cli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Boca", "Client.Boca\Client.Boca.csproj", "{551F0B88-3411-4CA1-9801-7808E66014C8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClientConversions", "ClientConversions", "{7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{92470E9F-5AAD-48B3-9F90-B02FC2B4F992} = {7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}
+		{8661F291-46A2-455F-AC37-39182EE15015} = {7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}
+		{551F0B88-3411-4CA1-9801-7808E66014C8} = {7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}
 	EndGlobalSection
 EndGlobal
