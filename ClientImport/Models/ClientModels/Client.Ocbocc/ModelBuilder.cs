@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Ocbocc
 {
@@ -20,6 +21,7 @@ namespace ClientImport.Models.ClientModels.Client.Ocbocc
         }
         private void ConfigureMapper()
         {
+            var config = Mapper.Configuration;
             Mapper.Initialize(cfg =>
             {
 
@@ -55,10 +57,10 @@ namespace ClientImport.Models.ClientModels.Client.Ocbocc
                         .ForMember(target => target.MaritalStatus, opts => opts.ResolveUsing(c => c.MaritalStatus))
                         .ForMember(target => target.State, opts => opts.ResolveUsing(c => c.State))
                         .ForMember(target => target.ZipCode, opts => opts.ResolveUsing(c => c.ZipCode));
-                         
+
 
             });
-            Mapper.AssertConfigurationIsValid();
+            config.AssertConfigurationIsValid();
         }
 
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)

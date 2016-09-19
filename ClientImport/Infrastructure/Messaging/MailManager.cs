@@ -134,7 +134,7 @@ namespace ClientImport.Infrastructure.Messaging
 
         }
 
-        private string GenerateEmailBody(MailTemplateTypes templateType, string subject, object model)
+        public static string GenerateEmailBody(MailTemplateTypes templateType, string subject, object model)
         {
             var templateContent = TemplatePath(templateType);
 

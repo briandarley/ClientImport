@@ -10,6 +10,7 @@ namespace ClientImport.Models.JWSModels.CompanyInfo
         public string Number { get; set; }
         public bool WcLob { get; set; }
         public BaseTier ParentTier { get; set; }
+        protected BaseTier() { }
         protected BaseTier(IDataReader dr, string prefix)
         {
             Id = dr.GetString($"{prefix}_id");

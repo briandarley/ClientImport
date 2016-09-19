@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.OleDb;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Osceola
 {

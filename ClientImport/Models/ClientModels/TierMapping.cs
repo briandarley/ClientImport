@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using ClientImport.Infrastructure;
 using ClientImport.Models.JWSModels;
 using ClientImport.Models.JWSModels.CompanyInfo;
@@ -31,10 +30,14 @@ namespace ClientImport.Models.ClientModels
             EventHandler<ClientLogEventArgs> multMaping
             )
         {
+            if (Regex.IsMatch(name, @"\d+"))
+            {
+                
+            }
             
             var levelList = levelMappings
                 .Where(c => c.ParentTier.Name.ToUpper() == parentName.ToUpper())
-                .Where(c => c.Name.ToUpper() == name.ToUpper())
+                .Where(c => c.Name.ToUpper() == name.ToUpper() || c.Number == name)
                 .GroupBy(c => new {c.Name, c.Id})
                 .ToList();
 

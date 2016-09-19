@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using ClientImport.Infrastructure;
+using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Boca
 {
@@ -19,11 +22,11 @@ namespace ClientImport.Models.ClientModels.Client.Boca
 
 
 
-
+        private IMapper mapper;
         private void ConfigureMapper()
         {
-            Mapper.Initialize(cfg =>
-            {
+            var config = new MapperConfiguration(cfg =>
+           {
 
 
                 cfg.CreateMap<Record, JWSModels.Record>()
@@ -44,26 +47,26 @@ namespace ClientImport.Models.ClientModels.Client.Boca
                 .AfterMap((src, target) =>
                 {
 
-                
-                        var tierMapping = new TierMapping(this,target);
-                        if(!src.Level5Name.IsEmpty())
-                        {
-                            tierMapping.MapOrgLevel(Tiers5,5, src.Level5Name.ToUpper(), src.DepartmentName.ToUpper(), 
-                                MissingOrganizationMappingEncountered, MultipleOrganizationMappingEncountered);
-                        }
-                        if(!src.DepartmentName.IsEmpty())
-                        {
-                            tierMapping = new TierMapping(this, target,src.DepartmentNumber);
-                            tierMapping.MapOrgLevel(Tiers4, 4, src.DepartmentName.ToUpper(), src.DivisionName.ToUpper(),
-                                MissingOrganizationMappingEncountered, MultipleOrganizationMappingEncountered);
-                        }
+
+                    var tierMapping = new TierMapping(this, target);
+                    if (!src.Level5Name.IsEmpty())
+                    {
+                        tierMapping.MapOrgLevel(Tiers5, 5, src.Level5Name.ToUpper(), src.DepartmentName.ToUpper(),
+                            MissingOrganizationMappingEncountered, MultipleOrganizationMappingEncountered);
+                    }
+                    if (!src.DepartmentName.IsEmpty())
+                    {
+                        tierMapping = new TierMapping(this, target, src.DepartmentNumber);
+                        tierMapping.MapOrgLevel(Tiers4, 4, src.DepartmentName.ToUpper(), src.DivisionName.ToUpper(),
+                            MissingOrganizationMappingEncountered, MultipleOrganizationMappingEncountered);
+                    }
                     if (target.TierLevel == 0)
                     {
                         target.TierLevel = 2;
                         target.TierLevelId = "109".PadLeft(6, '0');
 
                     }
-                
+
 
 
 
@@ -71,10 +74,17 @@ namespace ClientImport.Models.ClientModels.Client.Boca
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+            config.AssertConfigurationIsValid();
+            mapper = config.CreateMapper();
+
         }
 
+        public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)
+        {
 
+            var result = mapper.Map<List<JWSModels.Record>>(records);
+            return result;
+        }
 
     }
 }

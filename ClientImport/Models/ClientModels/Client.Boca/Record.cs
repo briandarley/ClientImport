@@ -19,21 +19,15 @@ namespace ClientImport.Models.ClientModels.Client.Boca
         [Column("Middle Initial"), FixedLength(80, 1)]
         public string MiddleInitial { get; set; }
         [Column("Name Suffix"), FixedLength(81, 4)]
-
-
         public string NameSuffix { get; set; }
-
         [Column("Social Security Number"), FixedLength(85,9)]
         public string SocialSecurityNumber { get; set; }
-
         [Column("Gender"), FixedLength(94, 1)]
         public string Gender { get; set; }
-    
-        [Column("Date of Birth"), FixedLength(95, 10)]
+    [Column("Date of Birth"), FixedLength(95, 10)]
         public DateTime DateOfBirth { get; set; }
         [Column("Marital Status"), FixedLength(105, 1)]
         public string MaritalStatus { get; set; }
-
         [Column("Address Line 1"), FixedLength(106, 80)]
         public string Address1 { get; set; }
         [Column("Address Line 2")]

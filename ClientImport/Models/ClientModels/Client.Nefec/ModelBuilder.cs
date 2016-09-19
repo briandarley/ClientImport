@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Nefec
 {
@@ -20,6 +21,7 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
         }
         private void ConfigureMapper()
         {
+            var config = Mapper.Configuration;
             Mapper.Initialize(cfg =>
             {
 
@@ -51,11 +53,11 @@ namespace ClientImport.Models.ClientModels.Client.Nefec
                     .ForMember(target => target.SocialSecurityNumber, opts => opts.ResolveUsing(c => c.SocialSecurityNumber))
                     .ForMember(target => target.State, opts => opts.ResolveUsing(c => c.State))
                     .ForMember(target => target.ZipCode, opts => opts.ResolveUsing(c => c.ZipCode));
-                     
+
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+            config.AssertConfigurationIsValid();
         }
 
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
 {
@@ -21,6 +23,9 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
         }
         private void ConfigureMapper()
         {
+            var config = Mapper.Configuration;
+
+            
             Mapper.Initialize(cfg =>
             {
 
@@ -50,20 +55,28 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
                     .ForMember(target => target.MaritalStatus, opts => opts.ResolveUsing(c => c.MaritalStatus))
                     .ForMember(target => target.PayRate, opts => opts.ResolveUsing(c => c.PayRate))
                     .ForMember(target => target.PayRateType, opts => opts.ResolveUsing(c => c.PayRateType))
-                    .ForMember(target => target.PhoneNumber, opts => opts.ResolveUsing(c => c.PhoneNumber))
-                    .ForMember(target => target.SocialSecurityNumber,opts => opts.ResolveUsing(c => c.SocialSecurityNumber))
+                    
                     .ForMember(target => target.State, opts => opts.ResolveUsing(c => c.State))
-                    .ForMember(target => target.ZipCode, opts => opts.ResolveUsing(c => c.ZipCode));
+                    .ForMember(target => target.ZipCode, opts => opts.ResolveUsing(c => c.ZipCode))
+                    .ForMember(target => target.SocialSecurityNumber, opts => opts.Ignore())
+                    .ForMember(target => target.PhoneNumber, opts => opts.Ignore())
+                    .AfterMap((src, dest) =>
+                    {
+                        dest.SocialSecurityNumber = Regex.Replace(src.SocialSecurityNumber, "[^0-9]", "");
+                        dest.PhoneNumber = Regex.Replace(src.PhoneNumber, "[^0-9]", "");
+                    });
+                //000247
 
 
 
 
 
-
+                
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+            config.AssertConfigurationIsValid();
+            
         }
 
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)

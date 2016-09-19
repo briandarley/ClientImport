@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Pinellas
 {
@@ -69,7 +70,24 @@ namespace ClientImport.Models.ClientModels.Client.Pinellas
             var modelBuilder = new ModelBuilder();
             modelBuilder.MissingOrganizationMappingEncountered += OnMissingOrganizationMappingEncountered;
             modelBuilder.MultipleOrganizationMappingEncountered += OnMultipleOrganizationMappingEncountered;
-            return modelBuilder.GetJwsRecordsFromClientRecords(records);
+
+            var modelRecords = modelBuilder.GetJwsRecordsFromClientRecords(records);
+            try
+            {
+                foreach (var modelRecord in modelRecords)
+                {
+                    if(string.IsNullOrEmpty(modelRecord?.TierLevelId)) continue;
+                
+                    modelRecord.TierLevelId = modelRecord.TierLevelId.PadLeft(6, '0');
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return modelRecords;
+
+            
 
         }
 

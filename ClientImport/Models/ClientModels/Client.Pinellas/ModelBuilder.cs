@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using ClientImport.Models.JWSModels.CompanyInfo;
+using ClientImport.Models.TierModel;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Pinellas
 {
@@ -14,16 +18,26 @@ namespace ClientImport.Models.ClientModels.Client.Pinellas
         {
             CompanyNumber = Constants.Clients.PinellasCompanyNumber;
             InitializeTiers();
-            ConfigureMapper();
 
+            ConfigureMapper();
+            var appsettings = new AppContext();
+            OrgList = appsettings.OrgLevels.Where(c => c.CompanyNumber == Constants.Clients.PinellasCompanyNumber && c.Level == 3).ToList();
+
+            Tiers3 = new List<Tier3>();
+            foreach (var orgLevel in OrgList)
+            {
+                Tiers3.Add(new Tier3(orgLevel));
+            }
 
         }
+
+        public List<OrgLevel> OrgList { get; set; }
+
         private void ConfigureMapper()
         {
-            Mapper.Initialize(cfg =>
+
+            var config = new MapperConfiguration(cfg =>
             {
-
-
                 cfg.CreateMap<Record, JWSModels.Record>()
                     .ForMember(target => target.TierLevel, opts => opts.Ignore())
                     .ForMember(target => target.TierLevelId, opts => opts.Ignore())
@@ -44,16 +58,35 @@ namespace ClientImport.Models.ClientModels.Client.Pinellas
                     .ForMember(target => target.EmployeeId, opts => opts.ResolveUsing(c => c.EmployeeId))
                     .ForMember(target => target.HoursWorkedPerDay, opts => opts.ResolveUsing(c => c.HoursWorkedPerDay))
                     .ForMember(target => target.DaysWorkedPerWeek, opts => opts.ResolveUsing(c => c.DaysWorkedPerWeek))
-                    .ForMember(target => target.JobClassCode, opts => opts.ResolveUsing(c => c.JobClassCode));
+                    .ForMember(target => target.JobClassCode, opts => opts.ResolveUsing(c => c.JobClassCode))
+                       .AfterMap((src, target) =>
+                       {
 
 
+                           TierMapping tierMapping;//= new TierMapping(this, target);
+                           if (src.DivisionNumber > 0)
+                           {
+                               tierMapping = new TierMapping(this, target, src.DivisionNumber.ToString());
+                               //var list = OrgList.Where(c => c.Number.Contains(src.DivisionNumber.ToString()));
+
+                               tierMapping.MapOrgLevel(Tiers3, 3, src.DivisionNumber.ToString(), string.Empty,
+                                   MissingOrganizationMappingEncountered, MultipleOrganizationMappingEncountered);
+
+                           }
+
+
+                       });
 
 
 
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+
+
+            config.AssertConfigurationIsValid();
+
+
         }
 
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)

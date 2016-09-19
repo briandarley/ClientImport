@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.MiamiJewish
 {
@@ -18,31 +19,32 @@ namespace ClientImport.Models.ClientModels.Client.MiamiJewish
 
             InitializeTiers();
             ConfigureMapper();
-            
+
 
         }
         private void ConfigureMapper()
         {
+            var config = Mapper.Configuration;
             Mapper.Initialize(cfg =>
             {
-                
+
 
                 cfg.CreateMap<Record, JWSModels.Record>()
-                    .ForMember(target => target.TierLevel               , opts => opts.Ignore())
-                    .ForMember(target => target.TierLevelId             , opts => opts.Ignore())
-                    .ForMember(target => target.TierName                , opts => opts.Ignore())
-                    .ForMember(target => target.UserLevel               , opts => opts.Ignore())
-                    .ForMember(target => target.IndexCode               , opts => opts.Ignore())
-                    .ForMember(target => target.NumberPayPeriods        , opts => opts.Ignore())
-                    .ForMember(target => target.PayRatePerPayPeriod     , opts => opts.Ignore())
-                    .ForMember(target => target.AnnualHours             , opts => opts.Ignore())
-                    .ForMember(target => target.AnnualPayRate           , opts => opts.Ignore())
+                    .ForMember(target => target.TierLevel, opts => opts.Ignore())
+                    .ForMember(target => target.TierLevelId, opts => opts.Ignore())
+                    .ForMember(target => target.TierName, opts => opts.Ignore())
+                    .ForMember(target => target.UserLevel, opts => opts.Ignore())
+                    .ForMember(target => target.IndexCode, opts => opts.Ignore())
+                    .ForMember(target => target.NumberPayPeriods, opts => opts.Ignore())
+                    .ForMember(target => target.PayRatePerPayPeriod, opts => opts.Ignore())
+                    .ForMember(target => target.AnnualHours, opts => opts.Ignore())
+                    .ForMember(target => target.AnnualPayRate, opts => opts.Ignore())
                     .ForMember(target => target.DaysWorkedPerWeek, opts => opts.Ignore())
                     .ForMember(target => target.OccupationCode, opts => opts.Ignore())
                     .ForMember(target => target.UnionCode, opts => opts.Ignore())
                     .ForMember(target => target.NameSuffix, opts => opts.Ignore())
                     .ForMember(target => target.HoursWorkedPerDay, opts => opts.Ignore())
-                    
+
                     .ForMember(target => target.AddressLine1, opts => opts.ResolveUsing(c => c.Address1))
                     .ForMember(target => target.AddressLine2, opts => opts.ResolveUsing(c => c.Address2))
                     .ForMember(target => target.City, opts => opts.ResolveUsing(c => c.City))
@@ -58,7 +60,7 @@ namespace ClientImport.Models.ClientModels.Client.MiamiJewish
                     .ForMember(target => target.PayRate, opts => opts.ResolveUsing(c => c.PayRate))
                     .ForMember(target => target.PayRateType, opts => opts.ResolveUsing(c => c.PayRateType))
                     .ForMember(target => target.PhoneNumber, opts => opts.ResolveUsing(c => c.PhoneNumber))
-                    .ForMember(target => target.SocialSecurityNumber,opts => opts.ResolveUsing(c => c.SocialSecurityNumber))
+                    .ForMember(target => target.SocialSecurityNumber, opts => opts.ResolveUsing(c => c.SocialSecurityNumber))
                     .ForMember(target => target.State, opts => opts.ResolveUsing(c => c.State))
                     .ForMember(target => target.ZipCode, opts => opts.ResolveUsing(c => c.ZipCode))
                      .AfterMap((src, target) =>
@@ -87,7 +89,7 @@ namespace ClientImport.Models.ClientModels.Client.MiamiJewish
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+            config.AssertConfigurationIsValid();
         }
 
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)

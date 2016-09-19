@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Osceola
 {
@@ -21,20 +22,21 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
         }
         private void ConfigureMapper()
         {
+            var config = Mapper.Configuration;
             Mapper.Initialize(cfg =>
             {
 
 
                 cfg.CreateMap<Record, JWSModels.Record>()
-                    .ForMember(target => target.TierLevel              ,opts => opts.Ignore())
-                    .ForMember(target => target.TierLevelId            ,opts => opts.Ignore())
-                    .ForMember(target => target.TierName               ,opts => opts.Ignore())
-                    .ForMember(target => target.UserLevel              ,opts => opts.Ignore())
-                    .ForMember(target => target.IndexCode              ,opts => opts.Ignore())
-                    .ForMember(target => target.NumberPayPeriods       ,opts => opts.Ignore())
-                    .ForMember(target => target.PayRatePerPayPeriod    ,opts => opts.Ignore())
-                    .ForMember(target => target.AnnualHours            ,opts => opts.Ignore())
-                    .ForMember(target => target.AnnualPayRate          ,opts => opts.Ignore())
+                    .ForMember(target => target.TierLevel, opts => opts.Ignore())
+                    .ForMember(target => target.TierLevelId, opts => opts.Ignore())
+                    .ForMember(target => target.TierName, opts => opts.Ignore())
+                    .ForMember(target => target.UserLevel, opts => opts.Ignore())
+                    .ForMember(target => target.IndexCode, opts => opts.Ignore())
+                    .ForMember(target => target.NumberPayPeriods, opts => opts.Ignore())
+                    .ForMember(target => target.PayRatePerPayPeriod, opts => opts.Ignore())
+                    .ForMember(target => target.AnnualHours, opts => opts.Ignore())
+                    .ForMember(target => target.AnnualPayRate, opts => opts.Ignore())
                     .ForMember(target => target.NameSuffix, opts => opts.ResolveUsing(c => c.NameSuffix))
                     .ForMember(target => target.JobClassCode, opts => opts.ResolveUsing(c => c.JobClassCode))
                     .ForMember(target => target.OccupationCode, opts => opts.Ignore())
@@ -53,7 +55,7 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
                              tierMapping.MapOrgLevel(Tiers3, 3, src.DivisionName.ToUpper(), src.DivisionName.ToUpper(),
                                  MissingOrganizationMappingEncountered, MultipleOrganizationMappingEncountered);
 
-                             
+
 
                          }
 
@@ -62,7 +64,7 @@ namespace ClientImport.Models.ClientModels.Client.Osceola
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+            config.AssertConfigurationIsValid();
         }
 
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)

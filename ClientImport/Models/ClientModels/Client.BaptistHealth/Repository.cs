@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 {
@@ -68,6 +69,7 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
         }
 
 
+       
 
         private IEnumerable<IEnumerable<IRecord<Record>>> GetAllRecords()
         {
@@ -80,8 +82,11 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
             }
         }
 
+        //protected override List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        
         protected override List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<Record>> records)
         {
 
@@ -95,7 +100,8 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
                 //{
                 //    record.TierLevel = 2;
                 //}
-                record.TierLevelId = "000108";//Constants.Clients.BaptistHealthCompanyNumber.PadLeft(6, '0');
+                record.Tier1CompanyId = "000108";//Constants.Clients.BaptistHealthCompanyNumber.PadLeft(6, '0');
+                //record.TierLevelId = "000108";//Constants.Clients.BaptistHealthCompanyNumber.PadLeft(6, '0');
 
                 //if (string.IsNullOrEmpty(record.ZipCode))
                 //{

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using ClientImport.Infrastructure.Interfaces;
+using ClientImport.Models.ClientModels.Client.BaptistHealth;
 using ClientImport.Models.JWSModels.CompanyInfo;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels
 {

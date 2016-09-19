@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using ClientImport.Models.JWSModels;
+using Core.Interfaces;
 
 
 namespace ClientImport.Models.ClientModels
 {
-    public abstract class BaseRepository<T>: IRecords<T> where T : new()
+    public abstract class BaseRepository<T> : IRecords<T> where T : new()
     {
         private readonly string _sourcePath;
         private readonly string _fileExtension;
@@ -22,7 +24,7 @@ namespace ClientImport.Models.ClientModels
         public List<IRecord<T>> Records { get; set; }
 
         List<IRecord<T>> IRecords<T>.Records { get; set; }
-        
+
 
         protected Logger _logger;
         protected BaseRepository(string clientName, string sourcePath, string fileExtension)
@@ -33,8 +35,8 @@ namespace ClientImport.Models.ClientModels
             _logger = new Logger();
         }
 
-        protected abstract List<JWSModels.Record> ConvertClientData(IEnumerable<IRecord<T>> records);
-        
+        protected abstract List<Record> ConvertClientData(IEnumerable<IRecord<T>> records);
+
         private IEnumerable<IEnumerable<IRecord<T>>> GetAllRecords()
         {
             foreach (var fileInfo in FileSystemFiles)
@@ -64,36 +66,46 @@ namespace ClientImport.Models.ClientModels
             }
             _logger.ConvertingFileContentsFor(ClientName);
 
-            
+
             foreach (var fileContents in allRecords)
             {
-                if(fileContents== null) continue;
-                
-                var records = ConvertClientData(fileContents);
-                foreach (var record in records)
+                try
                 {
-                    record.Format();
-                    if (record.TierLevel == 2)
+                    if (fileContents == null) continue;
+
+                    var records = ConvertClientData(fileContents);
+                    foreach (var record in records)
                     {
-                        record.TierLevelId = Tier2NullValue;
+                        if (record == null) continue;
+                        record.Format();
+                    
+                        //todo should TierLevel '2' be set to null?
+                        //if (record.TierLevel == 2)
+                        //{
+                        //    record.TierLevelId = Tier2NullValue;
+                        //}
                     }
-                }
-                
-                var repo = new JWSModels.Repository { Records = records };
+
+                    var repo = new Repository { Records = records.ToList() };
 
 
-                var basePath = $@"{Constants.BaseDestinationPath}\{ClientName}\";
-                if (!Directory.Exists(basePath))
-                {
-                    Directory.CreateDirectory(basePath);
+                    var basePath = $@"{Constants.BaseDestinationPath}\{ClientName}\";
+                    if (!Directory.Exists(basePath))
+                    {
+                        Directory.CreateDirectory(basePath);
+                    }
+                    var fileName = "OUT_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
+                    var outputPath = Path.Combine(basePath, fileName + ".xlsx");
+                    if (File.Exists(outputPath))
+                    {
+                        File.Delete(outputPath);
+                    }
+                    repo.WriteRecordsToExcelFile(outputPath);
                 }
-                var fileName = "OUT_" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
-                var outputPath = Path.Combine(basePath, fileName + ".xlsx");
-                if (File.Exists(outputPath))
+                catch (Exception e)
                 {
-                    File.Delete(outputPath);
+                    Console.WriteLine(e);
                 }
-                repo.WriteRecordsToExcelFile(outputPath);
             }
 
 

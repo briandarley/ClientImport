@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Core.Interfaces;
 
 namespace ClientImport.Models.JWSModels
 {
-    public class Record
+    public class Record:IRecord
     {
         [Column("Last_Name"), MaxLength(40)]
         public string LastName { get; set; }

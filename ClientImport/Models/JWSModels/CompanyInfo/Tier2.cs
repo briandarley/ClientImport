@@ -9,6 +9,11 @@ namespace ClientImport.Models.JWSModels.CompanyInfo
         public Tier2(BaseTier parentTier, IDataReader dr) : base(parentTier, dr, "t2")
         { }
 
+        public Tier2()
+        {
+            Name = string.Empty;
+
+        }
 
     }
 }

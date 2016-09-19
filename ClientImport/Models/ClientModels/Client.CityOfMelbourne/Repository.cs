@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
 {
@@ -68,8 +69,12 @@ namespace ClientImport.Models.ClientModels.Client.CityOfMelbourne
             var modelBuilder = new ModelBuilder();
             modelBuilder.MissingOrganizationMappingEncountered += OnMissingOrganizationMappingEncountered;
             modelBuilder.MultipleOrganizationMappingEncountered += OnMultipleOrganizationMappingEncountered;
-            return modelBuilder.GetJwsRecordsFromClientRecords(records);
-
+            var modelRecords = modelBuilder.GetJwsRecordsFromClientRecords(records);
+            foreach (var modelRecord in modelRecords)
+            {
+                modelRecord.TierLevelId = "000247";
+            }
+            return modelRecords;
         }
         
         protected override IEnumerable<IRecord<Record>> ReadSourceFileRecords(string filePath)

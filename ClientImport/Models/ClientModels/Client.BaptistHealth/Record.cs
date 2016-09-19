@@ -37,24 +37,34 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
         
         internal static IRecord<Record> GetRecord(string record)
         {
-            //BAKER|LISA|A|265731153|F|09/09/1967|5222 Rainey Avenue East||Orange Park|FL|32065|12/21/1990
-            var columns = record.Split(new[] {"|"}, StringSplitOptions.None);
-            
-            var claimant = new Record
+            Record claimant = null;
+            try
             {
-                LastName = columns[0],
-                FirstName = columns[1],
-                MiddleInitial = columns[2],
-                SocialSecurityNumber = columns[3],
-                Gender = columns[4],
-                DateOfBirth = DateTime.Parse(columns[5]),
-                Address1 = columns[6],
-                City = columns[8],
-                State = columns[9],
-                ZipCode = columns[10],
-                HireDate = DateTime.Parse(columns[11])
-            };
-            claimant.Tier1CompanyId = Constants.Clients.BaptistHealthCompanyNumber;
+                //BAKER|LISA|A|265731153|F|09/09/1967|5222 Rainey Avenue East||Orange Park|FL|32065|12/21/1990
+                var columns = record.Split(new[] {"|"}, StringSplitOptions.None);
+                var hireDate = DateTime.Parse("01/01/1901");
+                DateTime.TryParse(columns[11], out hireDate);
+                claimant = new Record
+                {
+                    LastName = columns[0],
+                    FirstName = columns[1],
+                    MiddleInitial = columns[2],
+                    SocialSecurityNumber = columns[3],
+                    Gender = columns[4],
+                    DateOfBirth = DateTime.Parse(columns[5]),
+                    Address1 = columns[6],
+                    City = columns[8],
+                    State = columns[9],
+                    ZipCode = columns[10],
+                    HireDate = hireDate
+                };
+                claimant.Tier1CompanyId = Constants.Clients.BaptistHealthCompanyNumber;
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
             return claimant;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using ClientImport.Infrastructure;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 {
@@ -26,6 +27,8 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 
         private void ConfigureMapper()
         {
+            
+            //var config = Mapper.Configuration;
             Mapper.Initialize(cfg =>
             {
 
@@ -59,7 +62,8 @@ namespace ClientImport.Models.ClientModels.Client.BaptistHealth
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+            
+            
         }
 
 

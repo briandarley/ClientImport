@@ -47,32 +47,38 @@ namespace ClientImport.Models.ClientModels.Client.LeeCountySb
             //|TCH Language Arts Sec|8868
             //|37.50|  29.276|0621|Cape Coral High|1/22/1999
             var columns = record.Split(new[] {"|"}, StringSplitOptions.None);
-            
-            var claimant = new Record
+            Record claimant = null;
+            try
             {
-                FirstName = columns[0],
-                LastName = columns[1],
-                MiddleInitial = columns[2],
-                SocialSecurityNumber = columns[3],
-                Gender = columns[4],
-                DateOfBirth = DateTime.Parse(columns[5]),
-                MaritalStatus = columns[6],
-                Address1 = columns[7],
-                Address2 = columns[8],
-                City = columns[9],
-                State = columns[10],
-                ZipCode = columns[11],
-                EmployeeId = columns[12],
-                DepartmentName = columns[13],
-                DepartmentNumber = columns[14],
-                //HoursWorkedPerDay = decimal.Parse(columns[15]),
-                PayRate = decimal.Parse(columns[16]),
+                claimant = new Record
+                {
+                    FirstName = columns[0],
+                    LastName = columns[1],
+                    MiddleInitial = columns[2],
+                    SocialSecurityNumber = columns[3],
+                    Gender = columns[4],
+                    DateOfBirth = columns[5] == "" ? DateTime.Parse("1/1/1890") : DateTime.Parse(columns[5]),
+                    MaritalStatus = columns[6],
+                    Address1 = columns[7],
+                    Address2 = columns[8],
+                    City = columns[9],
+                    State = columns[10],
+                    ZipCode = columns[11],
+                    EmployeeId = columns[12],
+                    DepartmentName = columns[13],
+                    DepartmentNumber = columns[14],
+                    //HoursWorkedPerDay = decimal.Parse(columns[15]),
+                    PayRate = decimal.Parse(columns[16]),
                 
-                DivisionNumber = columns[17],
-                DivisionName = columns[18],
-                HireDate = DateTime.Parse(columns[19])
-            };
-
+                    DivisionNumber = columns[17],
+                    DivisionName = columns[18],
+                    HireDate = DateTime.Parse(columns[19])
+                };
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
             return claimant;
         }
 

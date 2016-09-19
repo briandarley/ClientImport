@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.SarasotaCounty
 {
@@ -20,6 +21,7 @@ namespace ClientImport.Models.ClientModels.Client.SarasotaCounty
         }
         private void ConfigureMapper()
         {
+            var config = Mapper.Configuration;
             Mapper.Initialize(cfg =>
             {
 
@@ -35,7 +37,7 @@ namespace ClientImport.Models.ClientModels.Client.SarasotaCounty
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+            config.AssertConfigurationIsValid();
         }
 
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)

@@ -1,27 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
+using Client.PinellasCounty;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Messaging;
 using ClientImport.Models.ClientModels;
+using ClientImport.Models.JWSModels.CompanyInfo;
+using Core.Conversion;
+using Data.EntityInformation.Models;
+using Data.EntityInformation.Repositories;
 using log4net.Config;
 
 namespace ClientImport
 {
     class Program
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         static void Main(string[] args)
         {
+
+            var service = new JwsConverterService(Core.Constants.Entities.Boca);
+            service.ConverClientFile();
+            //CreateEntityInfoForClient();
+            
+         
+        }
+
+        private static void CreateEntityInfoForClient()
+        {
+            var repo = new EntityInfoRepository();
+            repo.AddEntityConfiguration(new EntityConfiguration
+            {
+                EntityCode = "BOCA",
+                CompanyNumber = "000004",
+                Enabled = true,
+                FileExtension = "txt",
+                SourceFilePath = "City of Boca Raton"
+            });
+            repo.Save();
+
+
+
+        }
+
+
+
+        static void OLDMain(string[] args)
+        {
+            //ImportClientOrganization();
+            //return;
             XmlConfigurator.Configure();
             var logger = new Logger();
             var runList = new List<KeyValuePair<string, Action>>
             {
 
-                //new KeyValuePair<string, Action>(Constants.Clients.Boca ,Process_Boca),
+                new KeyValuePair<string, Action>(Constants.Clients.Boca ,Process_Boca),
                 //new KeyValuePair<string, Action>(Constants.Clients.BaptistHealth, Process_BaptistHealth),
-                new KeyValuePair<string, Action>(Constants.Clients.CityOfMelbourne ,Process_CityOfMelbourne),
+                //new KeyValuePair<string, Action>(Constants.Clients.CityOfMelbourne ,Process_CityOfMelbourne),
                 //new KeyValuePair<string, Action>(Constants.Clients.LeeCountySchoolBoard ,Process_LeeCountSchoolBoard),
                 //new KeyValuePair<string, Action>(Constants.Clients.MiamiJewish ,Process_MiamiJewish),
                 //new KeyValuePair<string, Action>(Constants.Clients.MonroeCountySchoolBoard ,Process_MonroeCountySchoolBoard),
@@ -54,6 +95,68 @@ namespace ClientImport
 
         }
 
+        private static void ImportClientOrganizationFromSql()
+        {
+            var appContext = new AppContext();
+
+
+        }
+        private static void ImportClientOrganizationFromExel()
+        {
+            var appContext = new AppContext();
+            var list = appContext.OrgLevels.ToList();
+            try
+            {
+                var file = @"C:\Users\bdarl_000\Downloads\Department Number lookup.xlsx";
+
+                var connectionString = string.Format(Constants.ExcelConnectionString, file);
+                using (var cn = new OleDbConnection(connectionString))
+                {
+                    cn.Open();
+                    var schema = cn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
+                    string sheet1 = schema.Rows[0].Field<string>("TABLE_NAME");
+                    var cmd = cn.CreateCommand();
+                    cmd.CommandText = $"select * from [{sheet1}]";
+                    var dr = cmd.ExecuteReader();
+
+                    //var result = new List<IRecord<Record>>();
+
+
+                    var rownum = 0;
+                    while (dr.Read())
+                    {
+                        rownum++;
+
+                        if (rownum == 1)
+                        {
+                            continue;
+                        }
+                        var org = appContext.OrgLevels.Create();
+                        org.CompanyNumber = "000043";
+                        org.Level = 3;
+                        org.Name = dr.GetValue(0).ToString();
+                        org.Number = dr.GetValue(1).ToString();
+                        org.TierId = dr.GetValue(2).ToString();
+                        appContext.OrgLevels.Add(org);
+
+
+
+                    }
+
+
+
+                }
+                appContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+
+            Console.ReadLine();
+
+        }
 
 
         static void Process_Boca()
@@ -74,9 +177,6 @@ namespace ClientImport
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
-
-
-
         static void Process_BaptistHealth()
         {
             if (!Constants.ConfigBaptistHealthEnabled)
@@ -119,10 +219,52 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.LeeCountySb.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            GenerateEmailReport(new[] { Constants.Clients.LeeCountySchoolBoardFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            //GenerateEmailReport(new[] { Constants.Clients.LeeCountySchoolBoardFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
+            GenerateTextReport(new[] { Constants.Clients.LeeCountySchoolBoardFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
             repo.ArchiveSourceFile();
         }
+
+        private static void GenerateTextReport(string[] clients, ClientOrganizationInfos missingMappingsReport, ClientOrganizationInfos multipleOrganizationMappings)
+        {
+
+            try
+            {
+                if (missingMappingsReport.Any())
+                {
+
+                    missingMappingsReport.OrganizationInfos = missingMappingsReport.OrganizationInfos.OrderBy(c => c.Level).ThenBy(c => c.Name).ToList();
+                    var model = new { Report = missingMappingsReport, Clients = clients };
+                    var body = MailManager.GenerateEmailBody(MailManager.MailTemplateTypes.MissingOrganizations, "Failed", model);
+                    using (var sw = new StreamWriter(@"c:\temp\missingReport.txt"))
+                    {
+                        sw.Write(body);
+                        sw.Flush();
+                    }
+
+
+                }
+                if (multipleOrganizationMappings.Any())
+                {
+
+                    missingMappingsReport.OrganizationInfos = missingMappingsReport.OrganizationInfos.OrderBy(c => c.Level).ThenBy(c => c.Name).ToList();
+                    var model = new { Report = missingMappingsReport, Clients = clients };
+                    var body = MailManager.GenerateEmailBody(MailManager.MailTemplateTypes.MultipleOrganizatonMatches, "Failed", model);
+                    using (var sw = new StreamWriter(@"c:\temp\multipleOrganizationMappings.txt"))
+                    {
+                        sw.Write(body);
+                        sw.Flush();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+
+        }
+
         static void Process_MiamiJewish()
         {
             if (!Constants.ConfigMiamiJewishEnabled)
@@ -194,9 +336,9 @@ namespace ClientImport
             var repo = new Models.ClientModels.Client.Osceola.Repository();
             var totalRecords = repo.ConvertSourceContents();
             if (totalRecords == 0) return;
-            
-            
-            GenerateLoaclFileReport(Constants.Clients.Osceola,new[] { Constants.Clients.OsceolaFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings); 
+
+
+            GenerateLoaclFileReport(Constants.Clients.Osceola, new[] { Constants.Clients.OsceolaFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
 
             GenerateEmailReport(new[] { Constants.Clients.OsceolaFullName }, repo.MissingOrganizationMappings, repo.MultipleOrganizationMappings);
             if (!Constants.ArchiveSourceFiles) return;
@@ -254,7 +396,7 @@ namespace ClientImport
         {
             var basePath = $@"{Constants.BaseDestinationPath}\{clientName}\";
             var sb = new StringBuilder();
-            
+
 
             if (missingMappingsReport.Any())
             {
@@ -274,7 +416,7 @@ namespace ClientImport
                 {
                     if (clientOrganizationInfo.Level > 3)
                     {
-                        sb.AppendFormat("{0, -10}{1, -50}{2,-50}", clientOrganizationInfo.Level,clientOrganizationInfo.Name,clientOrganizationInfo.ParentName);
+                        sb.AppendFormat("{0, -10}{1, -50}{2,-50}", clientOrganizationInfo.Level, clientOrganizationInfo.Name, clientOrganizationInfo.ParentName);
                     }
                     else
                     {
@@ -287,12 +429,12 @@ namespace ClientImport
             }
             if (multiplMappingsReport.Any())
             {
-            
+
                 missingMappingsReport.OrganizationInfos = missingMappingsReport.OrganizationInfos.OrderBy(c => c.Level).ThenBy(c => c.Name).ToList();
-                
+
             }
 
-            
+
         }
         private static void GenerateEmailReport(string[] clients, ClientOrganizationInfos missingMappingsReport, ClientOrganizationInfos multiplMappingsReport)
         {
@@ -324,22 +466,6 @@ namespace ClientImport
                     "Success!", new { Clients = clients });
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

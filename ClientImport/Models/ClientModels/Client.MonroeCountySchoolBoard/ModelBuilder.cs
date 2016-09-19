@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using AutoMapper;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.MonroeCountySchoolBoard
 {
-    public class ModelBuilder: BaseModelBuilder, IModelBuilder
+    public class ModelBuilder : BaseModelBuilder, IModelBuilder
     {
         public event EventHandler<ClientLogEventArgs> MissingOrganizationMappingEncountered;
         public event EventHandler<ClientLogEventArgs> MultipleOrganizationMappingEncountered;
@@ -21,20 +22,21 @@ namespace ClientImport.Models.ClientModels.Client.MonroeCountySchoolBoard
         }
         private void ConfigureMapper()
         {
+            var config = Mapper.Configuration;
             Mapper.Initialize(cfg =>
             {
 
 
                 cfg.CreateMap<Record, JWSModels.Record>()
-                    .ForMember(target => target.TierLevel              , opts => opts.Ignore())
-                    .ForMember(target => target.TierLevelId            , opts => opts.Ignore())
-                    .ForMember(target => target.TierName               , opts => opts.Ignore())
-                    .ForMember(target => target.UserLevel              , opts => opts.Ignore())
-                    .ForMember(target => target.IndexCode              , opts => opts.Ignore())
-                    .ForMember(target => target.NumberPayPeriods       , opts => opts.Ignore())
-                    .ForMember(target => target.PayRatePerPayPeriod    , opts => opts.Ignore())
-                    .ForMember(target => target.AnnualHours            , opts => opts.Ignore())
-                    .ForMember(target => target.AnnualPayRate          , opts => opts.Ignore())
+                    .ForMember(target => target.TierLevel, opts => opts.Ignore())
+                    .ForMember(target => target.TierLevelId, opts => opts.Ignore())
+                    .ForMember(target => target.TierName, opts => opts.Ignore())
+                    .ForMember(target => target.UserLevel, opts => opts.Ignore())
+                    .ForMember(target => target.IndexCode, opts => opts.Ignore())
+                    .ForMember(target => target.NumberPayPeriods, opts => opts.Ignore())
+                    .ForMember(target => target.PayRatePerPayPeriod, opts => opts.Ignore())
+                    .ForMember(target => target.AnnualHours, opts => opts.Ignore())
+                    .ForMember(target => target.AnnualPayRate, opts => opts.Ignore())
                     .ForMember(target => target.DaysWorkedPerWeek, opts => opts.Ignore())
                     .ForMember(target => target.OccupationCode, opts => opts.Ignore())
                     .ForMember(target => target.UnionCode, opts => opts.Ignore())
@@ -69,14 +71,14 @@ namespace ClientImport.Models.ClientModels.Client.MonroeCountySchoolBoard
                             MissingOrganizationMappingEncountered, MultipleOrganizationMappingEncountered);
 
                     }
-                    
+
 
 
                 });
 
 
             });
-            Mapper.AssertConfigurationIsValid();
+            config.AssertConfigurationIsValid();
         }
 
         public List<JWSModels.Record> GetJwsRecordsFromClientRecords(IEnumerable<IRecord<Record>> records)

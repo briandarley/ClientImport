@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Interfaces;
+using Core.Interfaces;
 
 namespace ClientImport.Models.ClientModels.Client.Boca
 {
