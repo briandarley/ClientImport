@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Boca", "Client.Boca\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClientConversions", "ClientConversions", "{7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.CityOfMelbourne", "Client.CityOfMelbourne\Client.CityOfMelbourne.csproj", "{CA8BD406-3BB4-4150-95CD-097C1E18BF32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{551F0B88-3411-4CA1-9801-7808E66014C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{551F0B88-3411-4CA1-9801-7808E66014C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{551F0B88-3411-4CA1-9801-7808E66014C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA8BD406-3BB4-4150-95CD-097C1E18BF32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA8BD406-3BB4-4150-95CD-097C1E18BF32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA8BD406-3BB4-4150-95CD-097C1E18BF32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA8BD406-3BB4-4150-95CD-097C1E18BF32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,5 +61,6 @@ Global
 		{92470E9F-5AAD-48B3-9F90-B02FC2B4F992} = {7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}
 		{8661F291-46A2-455F-AC37-39182EE15015} = {7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}
 		{551F0B88-3411-4CA1-9801-7808E66014C8} = {7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}
+		{CA8BD406-3BB4-4150-95CD-097C1E18BF32} = {7AA1CDDF-9324-49E5-9E6A-97E39C7D8A03}
 	EndGlobalSection
 EndGlobal

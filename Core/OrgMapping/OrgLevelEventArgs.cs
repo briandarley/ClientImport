@@ -13,8 +13,13 @@ namespace Core.OrgMapping
         public string Name { get; set; }
         public string CostCenterName { get; set; }
 
-        public OrgLevelEventArgs(Record record)
+        public OrgLevelEventArgs(string companyId, Record record)
         {
+            if (string.IsNullOrEmpty(companyId))
+            {
+                throw new ArgumentException("Company Id is Required");
+            }
+            CompanyId = companyId;
             Record = record;
         }
     }

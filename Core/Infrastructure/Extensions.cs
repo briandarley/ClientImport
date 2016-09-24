@@ -9,6 +9,7 @@ namespace Core.Infrastructure
 {
     public static class Extensions
     {
+
         public static DateTime ToDate(this string value)
         {
             if (string.IsNullOrEmpty(value.Trim())) return DateTime.MinValue;
@@ -43,6 +44,8 @@ namespace Core.Infrastructure
             }
             return 0;
         }
+
+
 
         private static decimal ConvertToDecimal(object result)
         {
@@ -101,16 +104,10 @@ namespace Core.Infrastructure
             try
             {
                 var fieldName = ((ColumnAttribute)propertyInfo.GetCustomAttribute(typeof(ColumnAttribute))).Name;
-                int ordinal;
 
-                try
-                {
-                    ordinal = dr.GetOrdinal(fieldName);
-                }
-                catch (Exception)
-                {
-                    return DBNull.Value;
-                }
+
+                var ordinal = dr.GetOrdinal(fieldName);
+
 
                 var result = dr.GetValue(ordinal);
                 if (propertyInfo.PropertyType == typeof(double) && result != DBNull.Value)

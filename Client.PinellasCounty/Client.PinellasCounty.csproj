@@ -61,6 +61,10 @@
       <Project>{389448d0-6293-4204-be4a-5cb856d0b2cb}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Data.EntityInformation\Data.EntityInformation.csproj">
+      <Project>{5F636F08-E204-4A11-B1F9-B7AE8CE7303D}</Project>
+      <Name>Data.EntityInformation</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

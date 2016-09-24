@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Linq;
 using System.Reflection;
+using Core.Conversion;
 using Core.Infrastructure;
 using Core.Interfaces;
 
 namespace Client.BaptistHealth
 {
+    [EntityName(Core.Constants.Entities.BaptistHealth)]
     public class SourceRecord : IClientRecord
     {
-
+        
         public string JwsCompanyId { get; set; }
 
         private SourceRecord() { }
@@ -22,6 +25,7 @@ namespace Client.BaptistHealth
             return properties.OrderBy(c => c.Name).Select(propertyInfo => propertyInfo.Name);
         }
 
+        
 
 
         [Column("Last Name")]
@@ -48,13 +52,10 @@ namespace Client.BaptistHealth
         public DateTime HireDate { get; set; }
 
 
-
-
-
-        internal static SourceRecord GetRecord(string record)
+        public IClientRecord GetRecord(string companyId, string record)
         {
             var columns = record.Split(new[] { "|" }, StringSplitOptions.None);
-            
+
             DateTime hireDate;
             DateTime.TryParse(columns[11], out hireDate);
             if (hireDate.IsEmpty())
@@ -74,18 +75,15 @@ namespace Client.BaptistHealth
                 State = columns[9],
                 ZipCode = columns[10],
                 HireDate = hireDate,
-                JwsCompanyId = Core.Constants.CompanyNumbers.BaptistHealth
+                JwsCompanyId = companyId
             };
 
             return claimant;
 
-
         }
-
-
-
-        
-        
-
+        public IClientRecord GetRecord(string companyId, IDataReader dr)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

@@ -3,12 +3,9 @@
     public class Constants
     {
         public static string BaseDestinationPath = System.Configuration.ConfigurationManager.AppSettings["file-destination-base-path"];
-        public class CompanyNumbers
-        {
-            public static string PinellasCounty = System.Configuration.ConfigurationManager.AppSettings["file-company-number:pinellas"];
-            public static string BaptistHealth = System.Configuration.ConfigurationManager.AppSettings["file-company-number:baptistHealth"];
-            public static string Boca = System.Configuration.ConfigurationManager.AppSettings["file-company-number:boca"];
-        }
+
+        public const string CsvConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Extended Properties=\"Text;HDR=YES;FMT=Delimited;\"";
+
         public class Entities
         {
             /// <summary>
@@ -23,6 +20,11 @@
             /// PINELLAS
             /// </summary>
             public const string PinellasCounty = "PINELLAS";
+            /// <summary>
+            /// CITY_OF_MELBOURNE
+            /// </summary>
+            public const string CityOfMelbourne = "CITY_OF_MELBOURNE";
+
         }
 
     }

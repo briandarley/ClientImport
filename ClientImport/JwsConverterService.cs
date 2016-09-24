@@ -7,6 +7,9 @@ using ClientImport.Infrastructure;
 using Core.Conversion;
 using Data.EntityInformation.Repositories;
 using System.ComponentModel.Composition.Hosting;
+using System.Text;
+using Core.Interfaces;
+using Data.EntityInformation;
 using log4net.Config;
 
 namespace ClientImport
@@ -28,6 +31,10 @@ namespace ClientImport
         public void ConverClientFile()
         {
             var converter = GetConverterByEntityCode(_entityCode);
+            if (converter == null)
+            {
+                throw new ArgumentException($"Entity Code '{_entityCode}' is not referenced. Please reference the assembly and rebuild project.");
+            }
             var configuration = _repoEntity.GetEntityConfigurationByCode(_entityCode);
 
             var sourceFiles = Constants.BaseSourcePath + @"\" + configuration.SourceFilePath;
@@ -35,6 +42,7 @@ namespace ClientImport
 
             foreach (var file in files)
             {
+                
                 var records = converter.GetClientRecords(file).ToList();
 
                 var list = records
@@ -46,13 +54,39 @@ namespace ClientImport
                 {
                     record.Format();
                 }
-
+                
                 var outputPath = converter.CreateOuputFile(list);
                 var count = list.Count;
                 LogNewlyCreatedFile(outputPath, count);
+                LogMissingMappings(converter.MissingMappings);
             }
 
         }
+
+        private void LogMissingMappings(List<IInvalidOrgLevel> missingMappings)
+        {
+            var log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+            XmlConfigurator.Configure();
+            if (missingMappings == null)
+            {
+                log.Info("No Missing Mappings Detected");
+            }
+            else
+            {
+                log.Warn("The following mappings were missed");
+
+                var sb = new StringBuilder();
+
+
+                foreach (var missingMapping in missingMappings)
+                {
+                    sb.Append(missingMapping);
+                    sb.Append("\n");
+                }
+                log.Warn(sb.ToString());
+            }
+        }
+
         private void LogNewlyCreatedFile(string outputPath, int count)
         {
             var log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -75,7 +109,7 @@ namespace ClientImport
                                          c.GetCustomAttribute<EntityNameAttribute>().Name.ToUpper() ==
                                          entityCode.ToUpper()) != null;
             };
-            Func<Assembly, Type> converter = a =>
+            Func<Assembly, Type> jwsConverter = a =>
             {
                 return FindDerivedTypes(a, typeof(BaseJwsConverter))
                     .FirstOrDefault(c => c.GetCustomAttribute<EntityNameAttribute>() != null
@@ -84,17 +118,39 @@ namespace ClientImport
                                          entityCode.ToUpper());
 
             };
-            var targetType = AppDomain.CurrentDomain
+            Func<Assembly, Type> sourceRecord = a =>
+            {
+                return FindDerivedTypes(a, typeof(IClientRecord))
+                    .FirstOrDefault(c => c.GetCustomAttribute<EntityNameAttribute>() != null
+                                         &&
+                                         c.GetCustomAttribute<EntityNameAttribute>().Name.ToUpper() ==
+                                         entityCode.ToUpper());
+
+            };
+            var jwsConverterType = AppDomain.CurrentDomain
                 .GetAssemblies()
                 .Where(predicate)
-                .Select(converter)
+                .Select(jwsConverter)
                 .FirstOrDefault();
 
-            if (targetType == null) return null;
+            var clintSourceType = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Where(predicate)
+                .Select(sourceRecord)
+                .FirstOrDefault();
 
-            var instance = (BaseJwsConverter)Activator.CreateInstance(targetType);
+            if (jwsConverterType == null || clintSourceType == null) return null;
 
-            return instance;
+            
+
+            var sourceFileInstance = (IClientRecord) Activator.CreateInstance(clintSourceType,true);
+            var jwsConverterInstance = (BaseJwsConverter)Activator.CreateInstance(jwsConverterType, sourceFileInstance);
+
+            var entityConfiguration = ClientEntityConfiguration.Instance().GetConfigurationByEntityCode(entityCode);
+
+            jwsConverterInstance.EntityConfiguration = entityConfiguration;
+
+            return jwsConverterInstance;
         }
 
         private IEnumerable<Type> FindDerivedTypes(Assembly assembly, Type baseType)

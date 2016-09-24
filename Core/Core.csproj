@@ -84,6 +84,7 @@
     <Compile Include="JwsModels\CompanyInfo\Tier5.cs" />
     <Compile Include="JwsModels\CompanyInfo\Tier6.cs" />
     <Compile Include="JwsModels\CompanyInfo\Tier7.cs" />
+    <Compile Include="JwsModels\InvalidOrgLevel.cs" />
     <Compile Include="JwsModels\Record.cs" />
     <Compile Include="OrgMapping\OrgLevel.cs" />
     <Compile Include="OrgMapping\OrgLevelEventArgs.cs" />
@@ -93,6 +94,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data.EntityInformation\Data.EntityInformation.csproj">
+      <Project>{5F636F08-E204-4A11-B1F9-B7AE8CE7303D}</Project>
+      <Name>Data.EntityInformation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

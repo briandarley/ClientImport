@@ -4,14 +4,10 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
-using Client.PinellasCounty;
 using ClientImport.Infrastructure;
 using ClientImport.Infrastructure.Messaging;
 using ClientImport.Models.ClientModels;
-using ClientImport.Models.JWSModels.CompanyInfo;
-using Core.Conversion;
 using Data.EntityInformation.Models;
 using Data.EntityInformation.Repositories;
 using log4net.Config;
@@ -25,7 +21,7 @@ namespace ClientImport
         static void Main(string[] args)
         {
 
-            var service = new JwsConverterService(Core.Constants.Entities.Boca);
+            var service = new JwsConverterService(Core.Constants.Entities.CityOfMelbourne);
             service.ConverClientFile();
             //CreateEntityInfoForClient();
             
@@ -37,11 +33,11 @@ namespace ClientImport
             var repo = new EntityInfoRepository();
             repo.AddEntityConfiguration(new EntityConfiguration
             {
-                EntityCode = "BOCA",
-                CompanyNumber = "000004",
+                EntityCode = "CITY_OF_MELBOURNE",
+                CompanyNumber = "000069",
                 Enabled = true,
-                FileExtension = "txt",
-                SourceFilePath = "City of Boca Raton"
+                FileExtension = "csv",
+                SourceFilePath = "City of Melbourne"
             });
             repo.Save();
 

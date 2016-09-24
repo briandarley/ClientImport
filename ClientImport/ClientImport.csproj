@@ -189,6 +189,10 @@
       <Project>{551f0b88-3411-4ca1-9801-7808e66014c8}</Project>
       <Name>Client.Boca</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Client.CityOfMelbourne\Client.CityOfMelbourne.csproj">
+      <Project>{ca8bd406-3bb4-4150-95cd-097c1e18bf32}</Project>
+      <Name>Client.CityOfMelbourne</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Client.PinellasCounty\Client.PinellasCounty.csproj">
       <Project>{92470e9f-5aad-48b3-9f90-b02fc2b4f992}</Project>
       <Name>Client.PinellasCounty</Name>

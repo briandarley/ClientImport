@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Core.Infrastructure;
+﻿using Core.Infrastructure;
 
 namespace Core.Interfaces
 {
@@ -10,6 +9,7 @@ namespace Core.Interfaces
         string Name { get; set; }
         string ParentName { get; set; }
         string Number { get; set; }
+
 
     }
 }

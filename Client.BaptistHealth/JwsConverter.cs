@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Core.Conversion;
+﻿using Core.Conversion;
 using Core.Interfaces;
 using Core.JwsModels;
 using Core.OrgMapping;
@@ -12,14 +8,7 @@ namespace Client.BaptistHealth
     [EntityName(Core.Constants.Entities.BaptistHealth)]
     public class JwsConverter: BaseJwsConverter
     {
-        public override IEnumerable<IClientRecord> GetClientRecords(string path)
-        {
-            var contents = File.ReadAllText(path);
-            var records = contents.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-            var result = records.Select(SourceRecord.GetRecord);
-            return result;
-        }
+        
         public override IRecord GetJwsRecord(IClientRecord record)
         {
             var clientRecord = record as SourceRecord;
@@ -43,7 +32,7 @@ namespace Client.BaptistHealth
             result.ZipCode = clientRecord.ZipCode;
             result.HireDate = clientRecord.HireDate;
             
-            var args = new OrgLevelEventArgs(result)
+            var args = new OrgLevelEventArgs(record.JwsCompanyId,result)
             {
                 CompanyId = result.Tier1CompanyId,
             };
@@ -55,6 +44,7 @@ namespace Client.BaptistHealth
             return result;
         }
 
-       
+        public JwsConverter(IClientRecord clientRecord):base(clientRecord)
+        {}
     }
 }

@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Linq;
 using System.Reflection;
+using Core.Conversion;
 using Core.Infrastructure;
 using Core.Interfaces;
 
 namespace Client.PinellasCounty
 {
+    [EntityName(Core.Constants.Entities.PinellasCounty)]
     public class SourceRecord : IClientRecord
     {
+        private SourceRecord() { }
 
         public string JwsCompanyId { get; set; }
         public IEnumerable<string> PropertyNames()
@@ -67,9 +71,9 @@ namespace Client.PinellasCounty
         [Column("Hire Date")]
         public DateTime HireDate { get; set; }
         
-        private SourceRecord() { }
+        
 
-        internal static SourceRecord GetRecord(string record)
+        public  IClientRecord GetRecord(string companyId,string record)
         {
             //BRUCE|RONALD|R|001343642|M|12131945|M|66151 TUDOR RD N||PINELLAS PARK|FL|33782|7277292586|BUS DRIVER|212| 8.000| 5|  473.42|02242014|5590|W
 
@@ -101,7 +105,7 @@ namespace Client.PinellasCounty
                 HireDate = columns[18].ToDate(),
                 DivisionNumber = columns[19],
                 PayRateType = columns[20],
-                JwsCompanyId = Core.Constants.CompanyNumbers.PinellasCounty
+                JwsCompanyId = companyId
             };
             return claimant;
 
@@ -110,5 +114,9 @@ namespace Client.PinellasCounty
 
         }
 
+        public IClientRecord GetRecord(string companyId, IDataReader dr)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

@@ -5,15 +5,16 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Core;
 using Core.Conversion;
 using Core.Interfaces;
-
-namespace Client.Boca
+using Core.Infrastructure;
+namespace Client.CityOfMelbourne
 {
-    [EntityName(Core.Constants.Entities.Boca)]
+    [EntityName(Constants.Entities.CityOfMelbourne)]
     public class SourceRecord : IClientRecord
     {
-
+        
         public string JwsCompanyId { get; set; }
 
         private SourceRecord() { }
@@ -27,78 +28,68 @@ namespace Client.Boca
 
 
 
-        [Column("Last Name"), FixedLength(0, 39)]
+        [Column("Last_Name")]
         public string LastName { get; set; }
-        [Column("First Name"), FixedLength(40, 40)]
+        [Column("FirstName")]
         public string FirstName { get; set; }
-        [Column("Middle Initial"), FixedLength(80, 1)]
+        [Column("Middle_Initial")]
         public string MiddleInitial { get; set; }
-        [Column("Name Suffix"), FixedLength(81, 4)]
+        [Column("Name_Suffix")]
         public string NameSuffix { get; set; }
-        [Column("Social Security Number"), FixedLength(85, 9)]
+        [Column("SSN")]
         public string SocialSecurityNumber { get; set; }
-        [Column("Gender"), FixedLength(94, 1)]
+        [Column("Sex")]
         public string Gender { get; set; }
-        [Column("Date of Birth"), FixedLength(95, 10)]
+        [Column("Birth_Date")]
         public DateTime DateOfBirth { get; set; }
-        [Column("Marital Status"), FixedLength(105, 1)]
+        [Column("Marital_Status")]
         public string MaritalStatus { get; set; }
-        [Column("Address Line 1"), FixedLength(106, 80)]
+        [Column("Address1")]
         public string Address1 { get; set; }
-        [Column("Address Line 2")]
+        [Column("Address2")]
         public string Address2 { get; set; }
-        [Column("City"), FixedLength(186, 20)]
+        [Column("City")]
         public string City { get; set; }
-        [Column("State"), FixedLength(206, 2)]
+        [Column("State")]
         public string State { get; set; }
-        [Column("Zip Code"), FixedLength(208, 9)]
+        [Column("Zip")]
         public string ZipCode { get; set; }
-        [Column("Phone Number"), FixedLength(217, 10)]
+        [Column("Phone")]
         public string PhoneNumber { get; set; }
-
-        [Column("Pay Rate Type"), FixedLength(227, 1)]
-        public string PayRateType { get; set; }
-        [Column("Pay Rate"), FixedLength(228, 9, 2)]
-        public decimal PayRate { get; set; }
-
-        [Column("Hours Worked Per Day"), FixedLength(237, 4, 2)]
-        public decimal HoursWorkedPerDay { get; set; }
-
-        [Column("Days worked per week"), FixedLength(241, 2)]
-        public int HoursWorkedPerWeek { get; set; }
-
-        [Column("Hire Date"), FixedLength(243, 10)]
-        public DateTime HireDate { get; set; }
-
-        [Column("Job Class Code"), FixedLength(253, 6)]
-        public string JobClassCode { get; set; }
-
-        [Column("Job Description"), FixedLength(259, 60)]
-        public string JobDescription { get; set; }
-
-        [Column("Location Code"), FixedLength(319, 11)]
-        public string LocationCode { get; set; }
-
-        [Column("Location Name(Description)"), FixedLength(330, 40)]
-        public string LocationName { get; set; }
-
-        [Column("EmployeeID"), FixedLength(370, 9)]
+        [Column("Employee_ID")]
         public string EmployeeId { get; set; }
-        [Column("Department Number"), FixedLength(379, 6)]
+        [Column("Pay_Rate_Type")]
+        public string PayRateType { get; set; }
+        [Column("Pay_Rate")]
+        public decimal? PayRate { get; set; }
+
+        [Column("Hours_Worked_Per_Day")]
+        public int HoursWorkedPerDay { get; set; }
+        [Column("Days_Worked_Per_Week")]
+        public int HoursWorkedPerWeek { get; set; }
+        [Column("Hire_Date")]
+        public DateTime HireDate { get; set; }
+        [Column("Job_Class_Code")]
+        public string JobClassCode { get; set; }
+        [Column("Job_Description")]
+        public string JobDescription { get; set; }
+        [Column("Occupation_Code")]
+        public string OccupationCode { get; set; }
+        [Column("Union_Code")]
+        public string UnionCode { get; set; }
+        [Column("Number_Pay_Periods")]
+        public int NumberOfPayPeriods { get; set; }
+        [Column("Pay_Rate_per_pay_period")]
+        public decimal PayRatePerPeriod { get; set; }
+        [Column("Annual_Hours")]
+        public int AnnualHours { get; set; }
+        [Column("Annual_Pay_Rates")]
+        public decimal AnnualPayRae { get; set; }
+        [Column("Department Code")]
         public string DepartmentNumber { get; set; }
 
-        [Column("O5Num")]
-        public string Level5Number { get; set; }
 
-        [Column("Division Name"), FixedLength(385, 30)]
-        public string DivisionName { get; set; }
-        [Column("Department Name"), FixedLength(411, 30)]
-        public string DepartmentName { get; set; }
 
-        [Column("O5Name"), FixedLength(441, 30)]
-        public string Level5Name { get; set; }
-
-        
 
         public IClientRecord GetRecord(string companyId, string record)
         {
@@ -112,7 +103,11 @@ namespace Client.Boca
                 var fixedLengthAtr = propertyInfo.GetCustomAttribute<FixedLengthAttribute>();
 
                 var val = record.Substring(fixedLengthAtr.Start, fixedLengthAtr.Length).Trim();
-                
+                //var propertyName = propertyInfo.Name;
+
+                //start = fixedLengthAtr.Start;
+                //end = start + fixedLengthAtr.Length;
+
 
                 if (propertyInfo.PropertyType == typeof(string))
                 {
@@ -155,11 +150,18 @@ namespace Client.Boca
 
                 }
                 
-                
+                //var value = dr.GetValue(propertyInfo);
+                //if (value != DBNull.Value)
+                //{
+                //    propertyInfo.SetValue(result, value);
+                //}
+
 
             }
             result.HoursWorkedPerWeek = 0;
             result.JwsCompanyId = companyId;
+
+
             return result;
 
 
@@ -168,13 +170,49 @@ namespace Client.Boca
 
         }
 
-        public IClientRecord GetRecord(string companyId, IDataReader dr)
+
+        public IClientRecord GetRecord(string companyId,IDataReader dr)
         {
-            throw new NotSupportedException();
+            
+            var result = new SourceRecord();
+            var t = typeof(SourceRecord);
+            var properties = t.GetProperties().Where(c => c.GetCustomAttribute(typeof(ColumnAttribute)) != null);
+            foreach (var propertyInfo in properties)
+            {
+                var value = dr.GetValue(propertyInfo);
+
+                if (value == DBNull.Value) continue;
+
+                if (propertyInfo.PropertyType == typeof(int) && value is string)
+                {
+                    int convertedValue;
+                    var isInt = int.TryParse(value.ToString(), out convertedValue);
+                    if (isInt)
+                    {
+                        propertyInfo.SetValue(result, convertedValue);
+                    }
+                }
+                else if (propertyInfo.PropertyType == typeof(decimal) && value is string)
+                {
+                    decimal convertedValue;
+                    var isDecimal = decimal.TryParse(value.ToString(), out convertedValue);
+                    if (isDecimal)
+                    {
+                        propertyInfo.SetValue(result, convertedValue);
+                    }
+                }
+                else
+                {
+                    propertyInfo.SetValue(result, value);
+                }
+            }
+            result.JwsCompanyId = companyId;
+            
+            return result;
+
         }
-
-
-
+        
+        
 
     }
 }

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContext.cs" />
+    <Compile Include="ClientEntityConfiguration.cs" />
     <Compile Include="Migrations\201609181442435_add cols.cs" />
     <Compile Include="Migrations\201609181442435_add cols.Designer.cs">
       <DependentUpon>201609181442435_add cols.cs</DependentUpon>
