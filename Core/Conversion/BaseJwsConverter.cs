@@ -16,24 +16,24 @@ namespace Core.Conversion
     public abstract class BaseJwsConverter
     {
         protected IClientRecord ClientRecord { get; set; }
-        
-        public EntityConfiguration EntityConfiguration { get; set; }
 
+        public EntityConfiguration EntityConfiguration { get; set; }
+        protected abstract bool SkipFirstLine { get; set; }
 
         protected BaseJwsConverter(IClientRecord clientRecord)
         {
-            
+
             ClientRecord = clientRecord;
             MapOrgLevelHandler += JwsConverter_MapOrgLevelHandler;
         }
 
-        
+
         private Organization _oranizartions;
         public List<IInvalidOrgLevel> MissingMappings { get; set; }
         public event EventHandler<OrgLevelEventArgs> MapOrgLevelHandler;
-        
 
-        
+
+
         public IEnumerable<IClientRecord> GetClientRecords(string path)
         {
             var expectedFileExtension = EntityConfiguration.FileExtension.ToUpper();
@@ -43,6 +43,10 @@ namespace Core.Conversion
                     return GetClientRecordsFromFlatFile(path);
                 case "CSV":
                     return GetClientRecordsFromCsvFile(path);
+                case "XLSX":
+                    return GetClientRecordsFromXlsxFile(path);
+                case "XLS":
+                    return GetClientRecordsFromXlsxFile(path);
                 default:
                     throw new ArgumentException($"File Extension {expectedFileExtension} not expected. Please define proper conversion logic for file type");
             }
@@ -82,23 +86,65 @@ namespace Core.Conversion
                 {
                     rownum++;
 
-                    if (rownum == 1)
+                    if (rownum <= 1 && SkipFirstLine)
                     {
                         continue;
                     }
-                    
+
                     result.Add(ClientRecord.GetRecord(EntityConfiguration.CompanyNumber, dr));
 
                 }
-                
+
                 return result;
             }
         }
-       
+
+        private IEnumerable<IClientRecord> GetClientRecordsFromXlsxFile(string path)
+        {
+            var connectionString = string.Format(Constants.ExcelConnectionString, path);
+            using (var cn = new OleDbConnection(connectionString))
+            {
+                cn.Open();
+                var schema = cn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
+
+                if (schema == null) return null;
+                var sheet1 = schema.Rows[0].Field<string>("TABLE_NAME");
+                var cmd = cn.CreateCommand();
+                cmd.CommandText = $"select * from [{sheet1}]";
+
+                var dr = cmd.ExecuteReader();
+                if (dr == null) return null;
+
+                var result = new List<IClientRecord>();
+
+
+                var rownum = 0;
+                while (dr.Read())
+                {
+                    rownum++;
+
+                    if (rownum <= 1 && SkipFirstLine)
+                    {
+                        continue;
+                    }
+
+                    result.Add(ClientRecord.GetRecord(EntityConfiguration.CompanyNumber, dr));
+
+                }
+                return result;
+
+
+            }
+        }
+
+
+
+
+
 
         public abstract IRecord GetJwsRecord(IClientRecord record);
 
-      
+
         protected void OnOrgLevelEvent(OrgLevelEventArgs args)
         {
             MapOrgLevelHandler?.Invoke(this, args);
@@ -110,7 +156,7 @@ namespace Core.Conversion
             var name = string.Empty;
             var number = string.Empty;
             if (e.DivisonNumber.IsEmpty() && e.DepartmentNumber.IsEmpty()) return;
-            
+
             var organizationSet = false;
             if (_oranizartions == null)
             {
@@ -128,6 +174,21 @@ namespace Core.Conversion
                 level = 3;
                 number = e.DivisonNumber;
             }
+            if (!e.DivisionName.IsEmpty())
+            {
+                var subOrgs = _oranizartions.Tiers.Where(c => c.TierLevel == 3 && c.Name.ToUpper() == e.DivisionName.ToUpper()).ToList();
+                if (subOrgs.Any())
+                {
+                    var division = subOrgs.First();
+                    e.Record.TierLevel = 3;
+                    e.Record.TierLevelId = division.Id;
+                    e.CostCenterName = division.Name;
+                    organizationSet = true;
+                }
+                level = 3;
+                name = e.DivisionName;
+                number = e.DivisonNumber;
+            }
             if (!e.DepartmentNumber.IsEmpty() && !e.Name.IsEmpty())
             {
                 var subOrgs = _oranizartions.Tiers.Where(c => c.TierLevel == 4 && c.Name.ToUpper() == e.Name.ToUpper()).ToList();
@@ -143,9 +204,9 @@ namespace Core.Conversion
                 name = e.Name;
                 number = e.DepartmentNumber;
             }
-            else if (!e.DepartmentNumber.IsEmpty() )
+            else if (!e.DepartmentNumber.IsEmpty())
             {
-                var subOrgs = _oranizartions.Tiers.Where(c => c.TierLevel == 4 && c.Id == e.DepartmentNumber.PadLeft(6,'0')).ToList();
+                var subOrgs = _oranizartions.Tiers.Where(c => c.TierLevel == 4 && c.Id == e.DepartmentNumber.PadLeft(6, '0')).ToList();
                 if (subOrgs.Any())
                 {
                     var department = subOrgs.First();
@@ -157,9 +218,9 @@ namespace Core.Conversion
                 level = 4;
                 number = e.DepartmentNumber;
             }
-            if (!e.O5Level.IsEmpty())
+            if (!e.Level5Number.IsEmpty())
             {
-                var subOrgs = _oranizartions.Tiers.Where(c => c.Id.Contains(e.O5Level)).ToList();
+                var subOrgs = _oranizartions.Tiers.Where(c => c.Id.Contains(e.Level5Number)).ToList();
                 var orgLevel5 = _oranizartions.Tiers.Where(c => c.TierLevel == 5).ToList();
 
                 level = 5;
@@ -170,7 +231,7 @@ namespace Core.Conversion
 
             if (!organizationSet)
             {
-                var subOrg = _oranizartions.Tiers.Single(c => c.TierLevel == 2);
+                var subOrg = _oranizartions.Tiers.FirstOrDefault(c => c.TierLevel == 2);
                 e.Record.TierLevel = 2;
                 e.Record.TierLevelId = subOrg.Id;
 
@@ -182,10 +243,10 @@ namespace Core.Conversion
                 };
 
                 LogMissingMappings(invalidOrgLevel);
-                
+
             }
 
-            
+
 
         }
 

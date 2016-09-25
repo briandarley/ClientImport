@@ -1,11 +1,12 @@
 ﻿using Core.Conversion;
+using Core.Infrastructure;
 using Core.Interfaces;
 using Core.JwsModels;
 using Core.OrgMapping;
 
-namespace Client.PinellasCounty
+namespace Client.MiamiJewish
 {
-    [EntityName(Core.Constants.Entities.PinellasCounty)]
+    [EntityName(Core.Constants.Entities.MiamiJewish)]
     public class JwsConverter: BaseJwsConverter
     {
         protected override bool SkipFirstLine { get; set; }
@@ -18,21 +19,11 @@ namespace Client.PinellasCounty
             if (clientRecord == null)
             {
                 return null;
-                //throw new ArgumentException("Client Record is Empty or Invalid type");
             }
 
-            //var propertyNames = clientRecord.PropertyNames();
-            //foreach (var propertyName in propertyNames)
-            //{
-            //    Console.WriteLine(propertyName);
-            //}
-            //result.TierLevel = ??
-            //result.TierLevelId = ??
-            //result.TierName = ??
-            //result.UserLevel = ??
-            //result.IndexCode = ??
-            //result.NumberPayPeriods = ??
+            
             var result = new Record();
+            //JwsCompanyId = Core.Constants.CompanyNumbers.BaptistHealth
             result.Tier1CompanyId = clientRecord.JwsCompanyId;
             result.LastName = clientRecord.LastName;
             result.FirstName = clientRecord.FirstName;
@@ -40,34 +31,46 @@ namespace Client.PinellasCounty
             result.SocialSecurityNumber = clientRecord.SocialSecurityNumber;
             result.Gender = clientRecord.Gender;
             result.DateOfBirth = clientRecord.DateOfBirth;
-            result.MaritalStatus = clientRecord.MaritalStatus;
             result.AddressLine1 = clientRecord.Address1;
-            result.AddressLine2 = clientRecord.Address2;
             result.City = clientRecord.City;
             result.State = clientRecord.State;
             result.ZipCode = clientRecord.ZipCode;
-            result.EmployeeId = clientRecord.EmployeeId;
-            result.JobDescription = clientRecord.JobTitle;
-            result.JobClassCode = clientRecord.JobClassCode;
-            result.DaysWorkedPerWeek = (decimal)clientRecord.DaysWorkedPerWeek;
-            result.HoursWorkedPerDay = (decimal)clientRecord.HoursWorkedPerDay;
-            //result.DivisionNumber = clientRecord.DivisionNumber;
-            result.PayRateType = clientRecord.PayRateType;
-            result.PayRate = clientRecord.PayRate;
             result.HireDate = clientRecord.HireDate;
+            result.EmployeeId = clientRecord.EmployeeId;
+            //result.PayRatePerPayPeriod = clientRecord.PayRateType;
+            result.PayRate = clientRecord.PayRate??0;
+            result.MaritalStatus = clientRecord.MaritalStatus;
+            result.AddressLine1 = clientRecord.Address1;
+            result.AddressLine2 = clientRecord.Address2;
+            //result.PayRatePerPayPeriod = clientRecord.;
 
-            //var companyNumber = result.Tier1CompanyId;
-            //InitializeOrganizationList(companyNumber);
+            
+
+            string departmentNumber = null;
+            string divisionName = clientRecord.DivisionName;
+            string name = string.Empty;
+            if (!clientRecord.DepartmentNumber.IsEmpty())
+            {
+                departmentNumber = clientRecord.DepartmentNumber;
+                name = clientRecord.DepartmentName;
+            }
+            
+            
+
 
             var args = new OrgLevelEventArgs(record.JwsCompanyId,result)
             {
                 CompanyId = result.Tier1CompanyId,
-                DivisonNumber = clientRecord.DivisionNumber
+                DivisionName = divisionName,
+                DepartmentNumber = departmentNumber,
+                
+                Name =  name
+
             };
 
             
             OnOrgLevelEvent(args);
-
+            result.TierName = args.CostCenterName;
 
             return result;
         }

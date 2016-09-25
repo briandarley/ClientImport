@@ -71,12 +71,7 @@ namespace Core.JwsModels
 
 
 
-        //[Column("Group Name"), MaxLength(40)]
-        //public string GroupName { get; set; }
-        //[Column("Group Number")]
-        //public int GroupNumber{ get; set; }
-        //[Column("Tier1_Company_id"), MaxLength(40)]
-        //public string CompanyName { get; set; }
+        
         [Column("Tier1_Company_id")]
         public string Tier1CompanyId { get; set; }
 

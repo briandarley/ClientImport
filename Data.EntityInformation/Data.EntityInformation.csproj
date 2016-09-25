@@ -59,6 +59,10 @@
     <Compile Include="Migrations\201609181453451_add source path.Designer.cs">
       <DependentUpon>201609181453451_add source path.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609250128290_add skip line.cs" />
+    <Compile Include="Migrations\201609250128290_add skip line.Designer.cs">
+      <DependentUpon>201609250128290_add skip line.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\EntityConfiguration.cs" />
     <Compile Include="Migrations\201609181428586_init.cs" />
     <Compile Include="Migrations\201609181428586_init.Designer.cs">
@@ -81,6 +85,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201609181453451_add source path.resx">
       <DependentUpon>201609181453451_add source path.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609250128290_add skip line.resx">
+      <DependentUpon>201609250128290_add skip line.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,7 +8,8 @@ namespace Client.BaptistHealth
     [EntityName(Core.Constants.Entities.BaptistHealth)]
     public class JwsConverter: BaseJwsConverter
     {
-        
+        protected override bool SkipFirstLine { get; set; }
+
         public override IRecord GetJwsRecord(IClientRecord record)
         {
             var clientRecord = record as SourceRecord;

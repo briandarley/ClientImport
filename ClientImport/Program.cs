@@ -21,7 +21,7 @@ namespace ClientImport
         static void Main(string[] args)
         {
 
-            var service = new JwsConverterService(Core.Constants.Entities.CityOfMelbourne);
+            var service = new JwsConverterService(Core.Constants.Entities.SarasotaCounty);
             service.ConverClientFile();
             //CreateEntityInfoForClient();
             
@@ -33,14 +33,13 @@ namespace ClientImport
             var repo = new EntityInfoRepository();
             repo.AddEntityConfiguration(new EntityConfiguration
             {
-                EntityCode = "CITY_OF_MELBOURNE",
-                CompanyNumber = "000069",
+                EntityCode = Core.Constants.Entities.SarasotaCounty,
+                CompanyNumber = "SC0100",
                 Enabled = true,
-                FileExtension = "csv",
-                SourceFilePath = "City of Melbourne"
+                FileExtension = "xls",
+                SourceFilePath = "Sarasota County"
             });
             repo.Save();
-
 
 
         }

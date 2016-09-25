@@ -18,7 +18,8 @@ namespace Data.EntityInformation.Models
         public string SourceFilePath { get; set; }
         [Required, Column("ENABLED")]
         public bool Enabled { get; set; }
-    
+        [Column("SKIP_FIRST_LINE")]
+        public bool SkipFirstLine { get; set; }
 
     }
 }

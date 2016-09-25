@@ -16,8 +16,8 @@ namespace ClientImport
 {
     public class JwsConverterService
     {
+        public event EventHandler NoFilesAvailableToProcess; 
         private readonly string _entityCode;
-
         private EntityInfoRepository _repoEntity;
         
 
@@ -38,8 +38,14 @@ namespace ClientImport
             var configuration = _repoEntity.GetEntityConfigurationByCode(_entityCode);
 
             var sourceFiles = Constants.BaseSourcePath + @"\" + configuration.SourceFilePath;
-            var files = Directory.GetFiles(sourceFiles, "*." + configuration.FileExtension);
+            var files = Directory.GetFiles(sourceFiles, "*." + configuration.FileExtension)
+                        .Where(c=>!c.StartsWith("~")).ToList();
 
+            if (!files.Any())
+            {
+                NoFilesAvailableToProcess?.Invoke(this, EventArgs.Empty);
+                return;
+            }
             foreach (var file in files)
             {
                 
@@ -147,9 +153,10 @@ namespace ClientImport
             var jwsConverterInstance = (BaseJwsConverter)Activator.CreateInstance(jwsConverterType, sourceFileInstance);
 
             var entityConfiguration = ClientEntityConfiguration.Instance().GetConfigurationByEntityCode(entityCode);
-
+            
             jwsConverterInstance.EntityConfiguration = entityConfiguration;
-
+            jwsConverterType.GetProperty("SkipFirstLine", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(jwsConverterInstance, entityConfiguration.SkipFirstLine, null);
+            
             return jwsConverterInstance;
         }
 
