@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{389448D0-6293-4204-BE4A-5CB856D0B2CB}</ProjectGuid>
+    <ProjectGuid>{A003E8B0-02BB-4B40-954B-F539AD6209C3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Core</RootNamespace>
@@ -30,23 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.5.0.0\lib\net45\AutoMapper.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EPPlus, Version=4.0.5.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.4.0.5\lib\net20\EPPlus.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -66,15 +51,12 @@
     <Compile Include="Conversion\EntityNameAttribute.cs" />
     <Compile Include="Conversion\FixedLengthAttribute.cs" />
     <Compile Include="Conversion\Repository.cs" />
-    <Compile Include="Infrastructure\AppContext.cs" />
     <Compile Include="Infrastructure\Extensions.cs" />
     <Compile Include="Infrastructure\InvalidReasonTypes.cs" />
     <Compile Include="Interfaces\IClientRecord.cs" />
     <Compile Include="Interfaces\IInvalidOrgLevel.cs" />
     <Compile Include="Interfaces\IOrgLevel.cs" />
     <Compile Include="Interfaces\IRecord.cs" />
-    <Compile Include="JwsComapnyInfo\AppContext.cs" />
-    <Compile Include="JwsComapnyInfo\ComapnyInfo.cs" />
     <Compile Include="JwsModels\CompanyInfo\BaseTier.cs" />
     <Compile Include="JwsModels\CompanyInfo\Organization.cs" />
     <Compile Include="JwsModels\CompanyInfo\Tier1.cs" />
@@ -92,14 +74,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Data.EntityInformation\Data.EntityInformation.csproj">
-      <Project>{5F636F08-E204-4A11-B1F9-B7AE8CE7303D}</Project>
+      <Project>{5f636f08-e204-4a11-b1f9-b7ae8ce7303d}</Project>
       <Name>Data.EntityInformation</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

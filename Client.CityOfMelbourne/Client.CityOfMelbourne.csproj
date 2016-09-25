@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{389448d0-6293-4204-be4a-5cb856d0b2cb}</Project>
+      <Project>{a003e8b0-02bb-4b40-954b-f539ad6209c3}</Project>
       <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Data.EntityInformation\Data.EntityInformation.csproj">

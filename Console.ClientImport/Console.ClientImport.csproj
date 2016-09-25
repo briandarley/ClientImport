@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6372FC9C-001B-4741-9A8E-CB08212014C4}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Console.ClientImport</RootNamespace>
+    <AssemblyName>Console.ClientImport</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Client.BaptistHealth\Client.BaptistHealth.csproj">
+      <Project>{8661f291-46a2-455f-ac37-39182ee15015}</Project>
+      <Name>Client.BaptistHealth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.Boca\Client.Boca.csproj">
+      <Project>{551f0b88-3411-4ca1-9801-7808e66014c8}</Project>
+      <Name>Client.Boca</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.CityOfMelbourne\Client.CityOfMelbourne.csproj">
+      <Project>{ca8bd406-3bb4-4150-95cd-097c1e18bf32}</Project>
+      <Name>Client.CityOfMelbourne</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.LeeCountySb\Client.LeeCountySb.csproj">
+      <Project>{6023943f-c5b2-419e-b014-dbb400c8b6d6}</Project>
+      <Name>Client.LeeCountySb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.MiamiJewish\Client.MiamiJewish.csproj">
+      <Project>{3967917c-4b54-4f11-b099-ba6531949642}</Project>
+      <Name>Client.MiamiJewish</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.MonroeCountySchoolBoard\Client.MonroeCountySchoolBoard.csproj">
+      <Project>{f49a8467-5eb5-4c23-86cf-452d00d7bc1f}</Project>
+      <Name>Client.MonroeCountySchoolBoard</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.Nefec\Client.Nefec.csproj">
+      <Project>{cb677e1e-8fb9-426b-98fb-6cf388687609}</Project>
+      <Name>Client.Nefec</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.Ocbocc\Client.Ocbocc.csproj">
+      <Project>{28c2887d-64e7-4942-9043-a73a9c02ccbf}</Project>
+      <Name>Client.Ocbocc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.Osceola\Client.Osceola.csproj">
+      <Project>{21482756-905c-4e94-af3d-cd75cba80983}</Project>
+      <Name>Client.Osceola</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.PinellasCounty\Client.PinellasCounty.csproj">
+      <Project>{92470e9f-5aad-48b3-9f90-b02fc2b4f992}</Project>
+      <Name>Client.PinellasCounty</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.PolkCountySchoolBoard\Client.PolkCountySchoolBoard.csproj">
+      <Project>{98892263-3f50-40c7-b7b6-2ccf6276e5ff}</Project>
+      <Name>Client.PolkCountySchoolBoard</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client.SarasotaCounty\Client.SarasotaCounty.csproj">
+      <Project>{48313ddf-8b93-4d26-bff3-b0d4747d67e3}</Project>
+      <Name>Client.SarasotaCounty</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClientConversionService\ClientConversionService.csproj">
+      <Project>{8bd5de8f-b76e-442e-8638-08c59735c37c}</Project>
+      <Name>ClientConversionService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{a003e8b0-02bb-4b40-954b-f539ad6209c3}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data.EntityInformation\Data.EntityInformation.csproj">
+      <Project>{5F636F08-E204-4A11-B1F9-B7AE8CE7303D}</Project>
+      <Name>Data.EntityInformation</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
